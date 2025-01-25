@@ -1,0 +1,63 @@
+{
+  "order_id": "876543210",
+  "webhook_id": "wh_112233445",
+  "customer": {
+    "customer_id": "cust_003210",
+    "name": "Lucas Mendes",
+    "email": "lucas.mendes@email.com",
+    "phone": "+55 62 91234-5678",
+    "address": {
+      "street": "Rua das Palmeiras",
+      "number": "789",
+      "neighborhood": "Setor Bueno",
+      "city": "Goiânia",
+      "state": "GO",
+      "postal_code": "74000-000",
+      "country": "BR"
+    }
+  },
+  "order_details": {
+    "products": [
+      {
+        "product_id": "prod_401",
+        "name": "Smartphone Android",
+        "category": "Eletrônicos",
+        "quantity": 1,
+        "price_unit": 1299.90,
+        "total_price": 1299.90
+      },
+      {
+        "product_id": "prod_402",
+        "name": "Película de Vidro",
+        "category": "Acessórios",
+        "quantity": 1,
+        "price_unit": 39.90,
+        "total_price": 39.90
+      }
+    ],
+    "total": 1369.80,
+    "shipping_fee": 20.00,
+    "platform_fee": 68.49,
+    "seller_fee": 1281.31
+  },
+  "payment_details": {
+    "payment_id": "pay_556677889",
+    "payment_method": "pix",
+    "pix_key": "pix.lucas@email.com",
+    "transaction_qr_code": "https://pix.bank.com/qr-code/876543210",
+    "status": "pending",
+    "expires_at": "2025-01-24T18:00:00Z",
+    "currency": "BRL"
+  },
+  "shipping_details": {
+    "shipping_id": "ship_55667788",
+    "carrier": "Correios",
+    "tracking_code": null,
+    "estimated_delivery": "2025-01-30",
+    "status": "awaiting_payment"
+  },
+  "order_status": "pending",
+  "created_at": "2025-01-24T14:00:00Z",
+  "updated_at": "2025-01-24T14:01:00Z",
+  "notes": "Aguardando pagamento via PIX. O código QR expira em 4 horas."
+}

@@ -1,0 +1,62 @@
+{
+  "order_id": "432109876",
+  "webhook_id": "wh_098765432",
+  "customer": {
+    "customer_id": "cust_007654",
+    "name": "Ana Pereira",
+    "email": "ana.pereira@email.com",
+    "phone": "+55 41 91234-5678",
+    "address": {
+      "street": "Alameda dos Anjos",
+      "number": "456",
+      "neighborhood": "Batel",
+      "city": "Curitiba",
+      "state": "PR",
+      "postal_code": "80420-090",
+      "country": "BR"
+    }
+  },
+  "order_details": {
+    "products": [
+      {
+        "product_id": "prod_301",
+        "name": "Cafeteira Automática",
+        "category": "Eletrodomésticos",
+        "quantity": 1,
+        "price_unit": 899.90,
+        "total_price": 899.90
+      }
+    ],
+    "total": 924.90,
+    "shipping_fee": 25.00,
+    "platform_fee": 46.24,
+    "seller_fee": 853.66
+  },
+  "payment_details": {
+    "payment_id": "pay_99887766",
+    "payment_method": "credit_card",
+    "card_brand": "Visa",
+    "card_last_digits": "5678",
+    "installments": 1,
+    "installment_value": 924.90,
+    "status": "refunded",
+    "refund_details": {
+      "refund_id": "ref_33445566",
+      "amount": 924.90,
+      "processed_at": "2025-01-24T14:30:00Z",
+      "reason": "Produto devolvido pelo cliente"
+    },
+    "currency": "BRL"
+  },
+  "shipping_details": {
+    "shipping_id": "ship_22334455",
+    "carrier": "Loggi",
+    "tracking_code": null,
+    "estimated_delivery": "2025-01-29",
+    "status": "canceled"
+  },
+  "order_status": "refunded",
+  "created_at": "2025-01-22T10:00:00Z",
+  "updated_at": "2025-01-24T14:30:00Z",
+  "notes": "Reembolso processado após a devolução do produto."
+}

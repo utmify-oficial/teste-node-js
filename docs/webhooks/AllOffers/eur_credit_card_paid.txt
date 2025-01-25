@@ -1,0 +1,71 @@
+{
+  "WebhookId": "webhook_66778",
+  "OrderId": "9988221144",
+  "PaymentMethod": "CreditCard",
+  "UserCommission": 30.00,
+  "TotalSaleAmount": 300.00,
+  "PlatformCommission": 40.00,
+  "Currency": "EUR",
+  "SaleStatus": "Paid",
+  "Customer": {
+    "FirstName": "Sophie",
+    "LastName": "Müller",
+    "Phone": "+4915123456789",
+    "Email": "sophie.muller@example.com",
+    "Country": "DE",
+    "BillingAddress": {
+      "Street": "Hauptstraße 25",
+      "City": "Berlin",
+      "State": "BE",
+      "ZipCode": "10115",
+      "Country": "DE"
+    },
+    "ShippingAddress": {
+      "Street": "Schönhauser Allee 45",
+      "City": "Berlin",
+      "State": "BE",
+      "ZipCode": "10435",
+      "Country": "DE"
+    }
+  },
+  "OrderCreatedDate": "2025-01-23T15:30:00Z",
+  "PaymentDate": "2025-01-23T16:00:00Z",
+  "RefundDate": null,
+  "PaymentGateway": "CreditCard",
+  "OrderNotes": "Pagamento confirmado via cartão de crédito.",
+  "CouponCode": "NEWYEAR20",
+  "Items": [
+    {
+      "ItemId": "prod_789",
+      "ItemName": "Wireless Keyboard",
+      "Quantity": 1,
+      "UnitPrice": 100.00,
+      "ItemCategory": "Electronics",
+      "ItemBrand": "KeyWorks",
+      "ItemSku": "WK-00123"
+    },
+    {
+      "ItemId": "prod_890",
+      "ItemName": "Ergonomic Mouse",
+      "Quantity": 2,
+      "UnitPrice": 100.00,
+      "ItemCategory": "Electronics",
+      "ItemBrand": "MousePro",
+      "ItemSku": "EM-04567"
+    }
+  ],
+  "ShippingDetails": {
+    "ShippingMethod": "Express",
+    "EstimatedDeliveryDate": "2025-01-26T10:00:00Z",
+    "TrackingNumber": "TRK12345678",
+    "ShippingStatus": "Shipped"
+  },
+  "PaymentDetails": {
+    "PaymentStatus": "Paid",
+    "PaymentMethodDetails": {
+      "CardType": "Visa",
+      "Last4Digits": "1234",
+      "TransactionId": "CC9876543210"
+    }
+  }
+}
