@@ -1,0 +1,60 @@
+{
+  "WebhookId": "webhook_44556",
+  "OrderId": "9988776655",
+  "PaymentMethod": "Boleto",
+  "UserCommission": 75.00,
+  "TotalSaleAmount": 750.00,
+  "PlatformCommission": 90.00,
+  "Currency": "BRL",
+  "SaleStatus": "AwaitingPayment",
+  "Customer": {
+    "FirstName": "Ana",
+    "LastName": "Costa",
+    "Phone": "+5521987654321",
+    "Email": "ana.costa@example.com",
+    "Country": "BR",
+    "BillingAddress": {
+      "Street": "Rua das Laranjeiras, 500",
+      "City": "Rio de Janeiro",
+      "State": "RJ",
+      "ZipCode": "22240-003",
+      "Country": "BR"
+    },
+    "ShippingAddress": {
+      "Street": "Rua Marquês de Abrantes, 250",
+      "City": "Rio de Janeiro",
+      "State": "RJ",
+      "ZipCode": "22230-060",
+      "Country": "BR"
+    }
+  },
+  "OrderCreatedDate": "2025-01-24T11:00:00Z",
+  "PaymentDate": null,
+  "RefundDate": null,
+  "PaymentGateway": "Boleto",
+  "OrderNotes": "Aguardando pagamento via boleto bancário.",
+  "CouponCode": "VERAO10",
+  "Items": [
+    {
+      "ItemId": "prod_321",
+      "ItemName": "Wireless Headphones",
+      "Quantity": 1,
+      "UnitPrice": 750.00,
+      "ItemCategory": "Electronics",
+      "ItemBrand": "AudioMax",
+      "ItemSku": "WH-890123"
+    }
+  ],
+  "ShippingDetails": {
+    "ShippingMethod": "Express",
+    "EstimatedDeliveryDate": "2025-01-28T16:00:00Z",
+    "TrackingNumber": null,
+    "ShippingStatus": "Pending"
+  },
+  "PaymentDetails": {
+    "PaymentStatus": "Pending",
+    "PaymentMethodDetails": {
+      "BoletoNumber": "BOLETO9876543210"
+    }
+  }
+}

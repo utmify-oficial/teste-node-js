@@ -1,0 +1,63 @@
+{
+  "order_id": "123450987",
+  "webhook_id": "wh_987654321",
+  "customer": {
+    "customer_id": "cust_009876",
+    "name": "Fernanda Costa",
+    "email": "fernanda.costa@email.com",
+    "phone": "+55 11 95678-4321",
+    "address": {
+      "street": "Avenida Central",
+      "number": "1234",
+      "neighborhood": "Vila Nova",
+      "city": "São Paulo",
+      "state": "SP",
+      "postal_code": "04567-000",
+      "country": "BR"
+    }
+  },
+  "order_details": {
+    "products": [
+      {
+        "product_id": "prod_501",
+        "name": "Fone de Ouvido Bluetooth",
+        "category": "Eletrônicos",
+        "quantity": 1,
+        "price_unit": 249.90,
+        "total_price": 249.90
+      },
+      {
+        "product_id": "prod_502",
+        "name": "Capa para Smartphone",
+        "category": "Acessórios",
+        "quantity": 1,
+        "price_unit": 49.90,
+        "total_price": 49.90
+      }
+    ],
+    "total": 324.80,
+    "shipping_fee": 25.00,
+    "platform_fee": 16.24,
+    "seller_fee": 283.56
+  },
+  "payment_details": {
+    "payment_id": "pay_44556677",
+    "payment_method": "boleto",
+    "boleto_url": "https://bank.com/boleto/123450987",
+    "boleto_barcode": "23791012345678901234567890123456789012345678",
+    "status": "pending",
+    "due_date": "2025-01-27",
+    "currency": "BRL"
+  },
+  "shipping_details": {
+    "shipping_id": "ship_33445566",
+    "carrier": "Total Express",
+    "tracking_code": null,
+    "estimated_delivery": "2025-02-03",
+    "status": "awaiting_payment"
+  },
+  "order_status": "pending",
+  "created_at": "2025-01-24T15:00:00Z",
+  "updated_at": "2025-01-24T15:01:00Z",
+  "notes": "Pagamento pendente via boleto bancário. O pedido será processado após a confirmação do pagamento."
+}
