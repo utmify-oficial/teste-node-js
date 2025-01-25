@@ -41,7 +41,7 @@ Utilize o **Insomnia** ou **Postman** e faça uma requisição do tipo **POST** 
 ## Como executar o projeto
 
 * Crie uma conta no MongoDB Atlas, caso não possua, e gere uma string de conexão com o banco nomeado "Utmify";
-* Adicione a string de conexão nas variáveis de ambiente, criando um arquivo **.env**, conform arquivo de exemplo **.env.example**;
+* Adicione a string de conexão nas variáveis de ambiente, criando um arquivo **.env**, conforme arquivo de exemplo **.env.example**;
 * Adicione a variável **PORT** conforme a sua preferência;
 * Instale, caso não possua, o yarn na sua máquina;
 * Execute o comando **yarn install**;
