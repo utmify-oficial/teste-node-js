@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "ts-node-dev src/server/server",
     "test": "jest",
+    "test:controllers": "jest  --testPathPattern=src/modules/orders/controllers/__tests__",
     "lint": "eslint src --fix"
   },
   "dependencies": {
