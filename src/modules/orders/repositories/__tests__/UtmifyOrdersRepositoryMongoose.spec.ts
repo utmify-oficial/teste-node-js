@@ -1,3 +1,4 @@
+import { TransactionError } from '../../../../core/errors/TransactionError';
 import { MongoDB } from '../../../../database/MongoDB';
 import { UtmifyOrderModel } from '../../models/UtmifyOrderModel';
 import { UtmifyIntegrationPlatform } from '../../types/UtmifyIntegrationPlatform';
@@ -71,6 +72,33 @@ describe('save', () => {
     expect(updatedOrder?.updatedAt).toEqual(updateDate);
 
     await UtmifyOrderModel.deleteOne({ _id: savedOrder?._id });
+  });
+
+  it('should throw an error when trying to update a paid order to pending state', async () => {
+    const baseData = getBaseData();
+    const savedOrder = await repository.save(baseData);
+    const foundOrder = await UtmifyOrderModel.findById(savedOrder?._id);
+    await expect(repository.save({ ...baseData, transactionStatus: UtmifyTransactionStatus.Pending }))
+    .rejects
+    .toThrow(new TransactionError('Invalid order transaction status update'));
+  });
+
+  it('should throw an error when trying to update a refunded order to paid state', async () => {
+    const baseData = getBaseData();
+    const savedOrder = await repository.save({ ...baseData, transactionStatus: UtmifyTransactionStatus.Refunded });
+    const foundOrder = await UtmifyOrderModel.findById(savedOrder?._id);
+    await expect(repository.save({ ...baseData, transactionStatus: UtmifyTransactionStatus.Paid }))
+    .rejects
+    .toThrow(new TransactionError('Invalid order transaction status update'));
+  });
+
+  it('should throw an error when trying to update a refunded order to pending state', async () => {
+    const baseData = getBaseData();
+    const savedOrder = await repository.save({ ...baseData, transactionStatus: UtmifyTransactionStatus.Refunded });
+    const foundOrder = await UtmifyOrderModel.findById(savedOrder?._id);
+    await expect(repository.save({ ...baseData, transactionStatus: UtmifyTransactionStatus.Pending }))
+    .rejects
+    .toThrow(new TransactionError('Invalid order transaction status update'));
   });
 });
 
