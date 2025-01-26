@@ -1,8 +1,8 @@
-import { Router } from 'express';
-import { webhookRouter } from './webhook.routes';
+import { Router } from "express";
+import { webhookRouter } from "./webhook.routes";
 
 const router = Router();
 
-router.use('/webhooks', webhookRouter);
+router.use("/webhooks", webhookRouter);
 
 export { router };

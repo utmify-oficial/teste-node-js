@@ -1,14 +1,14 @@
 /* eslint-disable no-console */
-import { Request, Response } from 'express';
-import { Controller } from '../../../core/interfaces/Controller';
-import { SaveUtmifyOrderUseCase } from '../usecases/SaveUtmifyOrderUseCase';
-import { UtmifyPaymentMethod } from '../types/UtmifyPaymentMethod';
-import { UtmifyTransactionStatus } from '../types/UtmifyTransactionStatus';
-import { UtmifyProduct } from '../types/UtmifyProduct';
-import { UtmifyCustomer } from '../types/UtmifyCustomer';
-import { UtmifyValues } from '../types/UtmifyValues';
-import { UtmifyIntegrationPlatform } from '../types/UtmifyIntegrationPlatform';
-import { RequestError } from '../../../core/errors/RequestError';
+import { Request, Response } from "express";
+import { Controller } from "../../../core/interfaces/Controller";
+import { SaveUtmifyOrderUseCase } from "../usecases/SaveUtmifyOrderUseCase";
+import { UtmifyPaymentMethod } from "../types/UtmifyPaymentMethod";
+import { UtmifyTransactionStatus } from "../types/UtmifyTransactionStatus";
+import { UtmifyProduct } from "../types/UtmifyProduct";
+import { UtmifyCustomer } from "../types/UtmifyCustomer";
+import { UtmifyValues } from "../types/UtmifyValues";
+import { UtmifyIntegrationPlatform } from "../types/UtmifyIntegrationPlatform";
+import { RequestError } from "../../../core/errors/RequestError";
 
 export class WorldMarketController implements Controller {
   private readonly usecase: SaveUtmifyOrderUseCase;
@@ -18,21 +18,23 @@ export class WorldMarketController implements Controller {
   }
 
   async handle(req: Request, res: Response): Promise<Response> {
-    console.log('WorldMarket order received');
+    console.log("WorldMarket order received");
     console.log(JSON.stringify(req.body, null, 2));
     console.log(JSON.stringify(req.headers));
 
     const body = req.body as WorldMarketBody;
 
     const paymentMethod = this.worldMarketPaymentMethodToUtmifyPaymentMethod(
-      body.payment_details.payment_method,
+      body.payment_details.payment_method
     );
 
     const transactionStatus = this.worldMarketStatusToUtmifyTransactionStatus(
-      body.order_status,
+      body.order_status
     );
 
-    const products = this.worldMarketProductsToUtmifyProducts(body.order_details.products);
+    const products = this.worldMarketProductsToUtmifyProducts(
+      body.order_details.products
+    );
 
     const customer = this.worldMarketCustomerToUtmifyCustomer(body.customer);
 
@@ -50,8 +52,14 @@ export class WorldMarketController implements Controller {
         values,
         createdAt: new Date(body.created_at),
         updatedAt: new Date(),
-        paidAt: transactionStatus === UtmifyTransactionStatus.Paid ? new Date(body.payment_details.paid_at) : null,
-        refundedAt: transactionStatus === UtmifyTransactionStatus.Refunded ? new Date(body.updated_at) : null,
+        paidAt:
+          transactionStatus === UtmifyTransactionStatus.Paid
+            ? new Date(body.payment_details.paid_at)
+            : null,
+        refundedAt:
+          transactionStatus === UtmifyTransactionStatus.Refunded
+            ? new Date(body.updated_at)
+            : null,
       },
       additionalInfo: {
         currency: body.payment_details.currency,
@@ -61,25 +69,39 @@ export class WorldMarketController implements Controller {
     return res.status(200).send();
   }
 
-  worldMarketPaymentMethodToUtmifyPaymentMethod(method: WorldMarketPaymentMethod): UtmifyPaymentMethod {
-    switch(method) {
-    case 'pix': return UtmifyPaymentMethod.Pix;
-    case 'boleto': return UtmifyPaymentMethod.Billet;
-    case 'credit_card': return UtmifyPaymentMethod.CreditCard;
-    default: throw new RequestError(400, `Unknown payment method: ${method}`);
+  worldMarketPaymentMethodToUtmifyPaymentMethod(
+    method: WorldMarketPaymentMethod
+  ): UtmifyPaymentMethod {
+    switch (method) {
+      case "pix":
+        return UtmifyPaymentMethod.Pix;
+      case "boleto":
+        return UtmifyPaymentMethod.Billet;
+      case "credit_card":
+        return UtmifyPaymentMethod.CreditCard;
+      default:
+        throw new RequestError(400, `Unknown payment method: ${method}`);
     }
   }
 
-  worldMarketStatusToUtmifyTransactionStatus(status: WorldMarketStatus): UtmifyTransactionStatus {
-    switch(status) {
-    case 'pending': return UtmifyTransactionStatus.Pending;
-    case 'approved': return UtmifyTransactionStatus.Paid;
-    case 'refunded': return UtmifyTransactionStatus.Refunded;
-    default: throw new RequestError(400, `Unknown payment status: ${status}`);
+  worldMarketStatusToUtmifyTransactionStatus(
+    status: WorldMarketStatus
+  ): UtmifyTransactionStatus {
+    switch (status) {
+      case "pending":
+        return UtmifyTransactionStatus.Pending;
+      case "approved":
+        return UtmifyTransactionStatus.Paid;
+      case "refunded":
+        return UtmifyTransactionStatus.Refunded;
+      default:
+        throw new RequestError(400, `Unknown payment status: ${status}`);
     }
   }
 
-  worldMarketProductsToUtmifyProducts(products: WorldMarketProduct[]): UtmifyProduct[] {
+  worldMarketProductsToUtmifyProducts(
+    products: WorldMarketProduct[]
+  ): UtmifyProduct[] {
     return products.map(({ product_id, name, quantity, price_unit }) => ({
       id: product_id,
       name,
@@ -88,7 +110,9 @@ export class WorldMarketController implements Controller {
     }));
   }
 
-  worldMarketCustomerToUtmifyCustomer(customer: WorldMarketCustomer): UtmifyCustomer {
+  worldMarketCustomerToUtmifyCustomer(
+    customer: WorldMarketCustomer
+  ): UtmifyCustomer {
     return {
       id: customer.customer_id,
       fullName: customer.name,
@@ -98,7 +122,9 @@ export class WorldMarketController implements Controller {
     };
   }
 
-  worldMarketBodyToUtmifyValues(orderDetails: WorldMarketOrderDetails): UtmifyValues {
+  worldMarketBodyToUtmifyValues(
+    orderDetails: WorldMarketOrderDetails
+  ): UtmifyValues {
     return {
       totalValueInCents: (orderDetails.total ?? 0) * 100,
       sellerValueInCents: (orderDetails.seller_fee ?? 0) * 100,
@@ -168,9 +194,9 @@ export type WorldMarketPaymentDetails = {
   paid_at: string;
 };
 
-export type WorldMarketPaymentMethod = 'pix' | 'boleto' | 'credit_card';
+export type WorldMarketPaymentMethod = "pix" | "boleto" | "credit_card";
 
-export type WorldMarketStatus = 'pending' | 'approved' | 'refunded';
+export type WorldMarketStatus = "pending" | "approved" | "refunded";
 
 export type WorldMarketShippingDetails = {
   shipping_id: string;

@@ -1,54 +1,122 @@
-# Teste técnico para vaga de desenvolvedor - Utmify
+### Como cheguei a esse resultado.
 
-### Introdução ao teste
+### 1. Criação do AllOffersController
 
-A [Utmify](https://app.utmify.com.br) é uma plataforma voltada para o rastreio de vendas online, realizadas principalmente com o auxílio das plataformas de anúncios, como Meta Ads, Google Ads etc.
+Para o teste foi implementado o controlador `AllOffersController.ts`, onde o payload é preparado para ser inserido no banco de dados padrão Utmify. Foram necessárias algumas validações, como verificar se o pedido está com status "Pendente", "Pago" ou "Reembolsado", além de converter o tipo de moeda para BRL.
 
-Para que a prestação desse serviço seja possível, faz-se estritamente necessário que haja a comunicação e o recebimento de dados das plataformas de vendas disponíveis no mercado, como a Shopify, Payt, Kiwify, Hotmart etc.
+### 2. Implementação das Regras de Atualização de Status
 
-O que torna essa comunicação possível é o que conhecemos como "Webhook", que trata-se de uma maneira que as plataformas conseguem enviar informações para outras plataformas. No nosso contexto, são obtidas as informações das vendas realizadas pelos nossos clientes nas plataformas acima citadas.
+As regras de atualização de status foram implementadas no método `save` do repositório `UtmifyOrdersRepositoryMongoose`:
 
-Um dos desafios encontrados no momento de realizar essa obtenção de dados, é que cada sistema possui a sua própria estrutura, fazendo-se necessário que haja o correto mapeamento dos dados recebidos para o formato adotado por tal sistema.
+```typescript
+if (existingOrder) {
+  // Check the current and new transaction status
+  const currentStatus = existingOrder.transactionStatus;
+  const newStatus = order.transactionStatus;
 
-O repositório em questão, possui um projeto já estruturado, que está configurado para receber eventos (via webhooks) de variadas plataformas (conforme implementação).
+  // Implement the business rules
+  if (
+    (currentStatus === "paid" && newStatus === "pending") ||
+    (currentStatus === "refunded" &&
+      (newStatus === "paid" || newStatus === "pending"))
+  ) {
+    throw new Error("Invalid status transition");
+  }
+}
+```
 
-A primeira (que você deve utilizar como exemplo), é a plataforma "WorldMarket", cujos webhooks seriam enviados via método **POST** para a rota **/webhooks/world-market** e o body da requisição carrega as informações dos pedidos advindos dessa plataforma (é possível se analisar exemplos desses bodys no diretório /docs/webhooks/WorldMarket).
+### 3. Adição da Lógica de Conversão de Moeda para BRL
 
-No controller já criado (WorldMarketController.ts), é possível se observar que a estrutura da platforma em questão está sendo mapeada para a estrutura da Utmify, salvando as informações da venda posteriormente.
+A lógica de conversão de moeda foi adicionada na ação `ConvertOrderCurrencyAction`:
 
-### **Agora é com você!**
+```typescript
+export class ConvertOrderCurrencyAction {
+  // Simulação de função que retorna a taxa de câmbio para BRL
+  async getExchangeRate(
+    fromCurrency: string,
+    toCurrency: string
+  ): Promise<number> {
+    const exchangeRates: { [key: string]: number } = {
+      USD: 5.25, // Exemplo de taxa de câmbio de USD para BRL
+      EUR: 5.7, // Exemplo de taxa de câmbio de EUR para BRL
+      BRL: 1, // BRL para BRL
+    };
 
-## Desafio
+    return exchangeRates[fromCurrency] || 1; // Retorna 1 se a moeda for BRL
+  }
 
-Crie um novo endpoint que receberá os pedidos da plataforma **AllOffers**, mapeando a estrutura dessa plataforma para a estrutura da Utmify. O mapeamento deve ser realizado com base nos payloads presentes no diretório **/docs/webhooks/AllOffers**.
+  // Função que executa a conversão
+  async execute(
+    input: ConvertOrderCurrencyActionInput
+  ): Promise<ConvertOrderCurrencyActionOutput> {
+    const { currency, totalSaleAmount, userCommission, platformCommission } =
+      input;
 
-Os pedidos da plataforma **AllOffers** podem vir nas moedas BRL, USD ou EUR, mas os valores devem ser salvos no banco de dados sempre na moeda BRL.
+    if (currency === "BRL") {
+      return {
+        totalSaleAmountInBRL: totalSaleAmount,
+        userCommissionInBRL: userCommission,
+        platformCommissionInBRL: platformCommission,
+      };
+    }
 
-Algumas plataformas podem enviar pedidos em ordem incorreta. Por ex: as etapas de um pix, são: pix gerado (pendente) > pix pago > pix reembolsado (caso o cliente reembolse). Porém, é possível que ocorra de uma plataforma enviar um pix pago e posteriormente o pix gerado (atualizando incorretamente o pedido para o status anterior). Você precisará garantir que um pedido gerado não salve em cima de um pedido pago e que um pedido pago não salve em cima de um pedido reembolsado.
+    const exchangeRate = await this.getExchangeRate(currency, "BRL");
+    return {
+      totalSaleAmountInBRL: totalSaleAmount * exchangeRate,
+      userCommissionInBRL: userCommission * exchangeRate,
+      platformCommissionInBRL: platformCommission * exchangeRate,
+    };
+  }
+}
+```
 
-### Requisitos
-* Todos os payloads presentes em **/docs/webhooks/AllOffers** precisam ser mapeados corretamente para a estrutura da Utmify;
-* Os pedidos precisam ser salvos sempre em BRL. Para isso, foi criada a classe ConvertOrderCurrencyAction. Utilize-a para implementar a lógica de conversão;
-* Os pedidos "pagos" não podem atualizar para "pendentes" e os pedidos reembolsados não podem atualizar para "pagos" ou "pendentes";
-* Crie um arquivo README.md explicando como chegou a determinado resultado (opcional);
-* Implemente testes com o Jest (opcional);
-* Desenvolva o seu código em uma branch que inclua o seu nome (ex: feat/sandersonrafael) e ao finalizar, faça um pull request.
+### Como a Lógica de Conversão Funciona
 
-## Como testar o endpoint
+A lógica de conversão de moeda funciona da seguinte maneira:
 
-Utilize o **Insomnia** ou **Postman** e faça uma requisição do tipo **POST** para o endpoint criado, utilizando como body da requisição algum dos payloads presentes no caminho **/docs/webhooks/AllOffers**.
+1. **Obtenção da Taxa de Câmbio**: A função `getExchangeRate` simula a obtenção da taxa de câmbio entre a moeda de origem e o BRL (Real Brasileiro). As taxas de câmbio são armazenadas em um objeto e a função retorna a taxa correspondente à moeda de origem. Se a moeda de origem for BRL, a taxa de câmbio retornada é 1.
 
-## Como executar o projeto
+2. **Execução da Conversão**: A função `execute` recebe um objeto de entrada contendo a moeda, o valor total da venda, a comissão do usuário e a comissão da plataforma. Se a moeda for BRL, os valores são retornados sem alteração. Caso contrário, a função obtém a taxa de câmbio e multiplica os valores pela taxa para convertê-los para BRL.
 
-* Crie uma conta no MongoDB Atlas, caso não possua, e gere uma string de conexão com o banco nomeado "Utmify";
-* Adicione a string de conexão nas variáveis de ambiente, criando um arquivo **.env**, conforme arquivo de exemplo **.env.example**;
-* Adicione a variável **PORT** conforme a sua preferência;
-* Instale, caso não possua, o yarn na sua máquina;
-* Execute o comando **yarn install**;
-* Execute o comando **yarn dev**.
+3. **Retorno dos Valores Convertidos**: A função retorna um objeto contendo os valores convertidos para BRL, incluindo o valor total da venda, a comissão do usuário e a comissão da plataforma.
 
-## Tecnologias utilizadas
-* TypeScript;
-* Express;
-* MongoDB;
-* Jest.
+### Exemplo de Armazenamento no Banco de Dados
+
+Os dados são armazenados no banco de dados no seguinte formato:
+
+```json
+{
+  "_id": { "$oid": "67954efa90198474cabc8895" },
+  "saleId": "9988776655",
+  "externalWebhookId": "webhook_44556",
+  "paymentMethod": "Billet",
+  "platform": "AllOffers",
+  "transactionStatus": "Pending",
+  "products": [
+    {
+      "id": "prod_321",
+      "name": "Wireless Headphones",
+      "quantity": { "$numberInt": "1" },
+      "priceInCents": { "$numberInt": "75000" }
+    }
+  ],
+  "customer": {
+    "id": "cust_3915",
+    "fullName": "Ana Costa",
+    "email": "ana.costa@example.com",
+    "phone": "+5521987654321",
+    "country": "BR"
+  },
+  "values": {
+    "totalValueInCents": { "$numberInt": "75000" },
+    "sellerValueInCents": { "$numberInt": "7500" },
+    "platformValueInCents": { "$numberInt": "9000" },
+    "shippingValueInCents": { "$numberInt": "0" }
+  },
+  "createdAt": { "$date": { "$numberLong": "1737716400000" } },
+  "updatedAt": { "$date": { "$numberLong": "1737838443937" } },
+  "paidAt": null,
+  "refundedAt": null,
+  "__v": { "$numberInt": "0" }
+}
+```
