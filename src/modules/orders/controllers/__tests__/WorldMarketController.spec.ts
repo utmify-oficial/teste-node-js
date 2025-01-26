@@ -6,13 +6,11 @@ import { UtmifyProduct } from '../../types/utimify/UtmifyProduct';
 import { UtmifyTransactionStatus } from '../../types/utimify/UtmifyTransactionStatus';
 import { UtmifyValues } from '../../types/utimify/UtmifyValues';
 import { SaveUtmifyOrderUseCase, SaveUtmifyOrderUseCaseInput } from '../../usecases/SaveUtmifyOrderUseCase';
-import {
-  WorldMarketBody,
-  WorldMarketController,
-  WorldMarketCustomer,
-  WorldMarketOrderDetails,
-  WorldMarketProduct,
-} from '../WorldMarketController';
+import { WorldMarketController } from '../WorldMarketController';
+import { WorldMarketOrder } from '../../types/worldMarket/WorldMarketOrder';
+import { WorldMarketCustomer } from '../../types/worldMarket/WorldMarketCustomer';
+import { WorldMarketOrderDetails } from '../../types/worldMarket/WorldMarketOrder';
+import { WorldMarketProduct } from '../../types/worldMarket/WorldMarketProduct';
 import { App } from '../../../../server/App';
 import { UtmifyIntegrationPlatform } from '../../types/utimify/UtmifyIntegrationPlatform';
 import { Request, Response } from 'express';
@@ -25,7 +23,7 @@ afterEach(() => App.close());
 
 describe('handle', () => {
   it('should call usecase with correct params', async () => {
-    const body: WorldMarketBody = {
+    const body: WorldMarketOrder = {
       order_id: '876543210',
       webhook_id: 'wh_112233445',
       customer: {
