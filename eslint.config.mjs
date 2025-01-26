@@ -23,7 +23,7 @@ export default [
       'space-before-blocks': 'error',
       'no-multiple-empty-lines': ['error', { 'max': 1, 'maxEOF': 0 }],
       'eol-last': 'error',
-      'max-len': ['error', 119],
+      'max-len': ['error', 150],
       'key-spacing': ['error', { 'afterColon': true }],
       'comma-spacing': ['error', { 'after': true }],
       'space-in-parens': 'error',

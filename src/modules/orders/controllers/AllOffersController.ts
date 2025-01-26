@@ -14,7 +14,7 @@ import { AllOffersOrder } from '../types/allOffers/AllOffersOrder';
 import { AllOffersCustomer } from '../types/allOffers/AllOffersCustomer';
 import { AllOffersOrderItem } from '../types/allOffers/AllOffersProduct';
 import { AllOffersSaleStatus } from '../types/allOffers/AllOffersTransactionStatus';
-import { AllOfferPaymentMethod } from '../types/allOffers/AllOffersPaymentMethod';
+import { AllOfferPaymentMethod, AllOffersCurrency } from '../types/allOffers/AllOffersPaymentMethod';
 import { ConvertOrderCurrencyAction } from '../actions/ConvertOrderCurrencyAction';
 
 export class AllOffersController implements Controller {
@@ -27,48 +27,58 @@ export class AllOffersController implements Controller {
   }
 
   async handle(req: Request, res: Response): Promise<Response> {
-    console.log('AllOffers order received');
-    console.log(JSON.stringify(req.body, null, 2));
-    console.log(JSON.stringify(req.headers));
+    try {
+      console.log('AllOffers order received');
+      console.log(JSON.stringify(req.body, null, 2));
+      console.log(JSON.stringify(req.headers));
 
-    const body = req.body as AllOffersOrder;
+      const body = req.body as AllOffersOrder;
 
-    const paymentMethod = this.AllOffersPaymentMethodToUtmifyPaymentMethod(
-      body.PaymentMethod,
-    );
+      const paymentMethod = this.AllOffersPaymentMethodToUtmifyPaymentMethod(
+        body.PaymentMethod,
+      );
 
-    const transactionStatus = this.AllOffersStatusToUtmifyTransactionStatus(
-      body.SaleStatus,
-    );
+      const transactionStatus = this.AllOffersStatusToUtmifyTransactionStatus(
+        body.SaleStatus,
+      );
 
-    const products = this.AllOffersProductsToUtmifyProducts(body.Items);
+      const products = await this.AllOffersProductsToUtmifyProducts(body.Items, body.Currency);
 
-    const customer = this.AllOffersCustomerToUtmifyCustomer(body.Customer);
+      const customer = this.AllOffersCustomerToUtmifyCustomer(body.Customer);
 
-    const values = await this.AllOffersBodyToUtmifyValues(body);
+      const values = await this.AllOffersBodyToUtmifyValues(body);
 
-    await this.usecase.execute({
-      data: {
-        saleId: body.OrderId,
-        externalWebhookId: body.WebhookId,
-        platform: UtmifyIntegrationPlatform.AllOffers,
-        paymentMethod,
-        transactionStatus,
-        products,
-        customer,
-        values,
-        createdAt: new Date(body.OrderCreatedDate),
-        updatedAt: new Date(),
-        paidAt: transactionStatus === UtmifyTransactionStatus.Paid ? new Date(body.PaymentDate as string) : null,
-        refundedAt: transactionStatus === UtmifyTransactionStatus.Refunded
-          ? new Date(body.RefundDate as string) : null,
-      },
-      additionalInfo: {
-        currency: 'BRL',
-      },
-    });
+      await this.usecase.execute({
+        data: {
+          saleId: body.OrderId,
+          externalWebhookId: body.WebhookId,
+          platform: UtmifyIntegrationPlatform.AllOffers,
+          paymentMethod,
+          transactionStatus,
+          products,
+          customer,
+          values,
+          createdAt: new Date(body.OrderCreatedDate),
+          updatedAt: new Date(),
+          paidAt: transactionStatus === UtmifyTransactionStatus.Paid ? new Date(body.PaymentDate as string) : null,
+          refundedAt: transactionStatus === UtmifyTransactionStatus.Refunded
+            ? new Date(body.RefundDate as string) : null,
+        },
+        additionalInfo: {
+          currency: 'BRL',
+        },
+      });
 
-    return res.status(200).send();
+      return res.status(200).send();
+    } catch(error) {
+      const errorMessage = error instanceof Error
+        ? error.message
+        : 'An unknown error occurred';
+
+      return res.status(500).send({
+        error: errorMessage,
+      });
+    }
   }
 
   AllOffersPaymentMethodToUtmifyPaymentMethod(method: AllOfferPaymentMethod): UtmifyPaymentMethod {
@@ -90,13 +100,24 @@ export class AllOffersController implements Controller {
     }
   }
 
-  AllOffersProductsToUtmifyProducts(products: AllOffersOrderItem[]): UtmifyProduct[] {
-    return products.map(({ ItemId, ItemName, Quantity, UnitPrice }) => ({
-      id: ItemId,
-      name: ItemName,
-      priceInCents: UnitPrice * 100,
-      quantity: Quantity,
-    }));
+  async AllOffersProductsToUtmifyProducts(products: AllOffersOrderItem[], currency: AllOffersCurrency)
+  : Promise<UtmifyProduct[]> {
+    return Promise.all(
+      products.map(async ({ ItemId, ItemName, Quantity, UnitPrice }) => {
+        const priceInCentsBRL =
+          (await this.convertOrderCurrencyAction.execute({
+            currency,
+            value: UnitPrice,
+          })) ?? 0;
+
+        return {
+          id: ItemId,
+          name: ItemName,
+          priceInCents: priceInCentsBRL * 100,
+          quantity: Quantity,
+        };
+      }),
+    );
   }
 
   AllOffersCustomerToUtmifyCustomer(customer: AllOffersCustomer): UtmifyCustomer {

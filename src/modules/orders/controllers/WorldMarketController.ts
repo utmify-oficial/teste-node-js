@@ -23,47 +23,57 @@ export class WorldMarketController implements Controller {
   }
 
   async handle(req: Request, res: Response): Promise<Response> {
-    console.log('WorldMarket order received');
-    console.log(JSON.stringify(req.body, null, 2));
-    console.log(JSON.stringify(req.headers));
+    try {
+      console.log('WorldMarket order received');
+      console.log(JSON.stringify(req.body, null, 2));
+      console.log(JSON.stringify(req.headers));
 
-    const body = req.body as WorldMarketOrder;
+      const body = req.body as WorldMarketOrder;
 
-    const paymentMethod = this.worldMarketPaymentMethodToUtmifyPaymentMethod(
-      body.payment_details.payment_method,
-    );
+      const paymentMethod = this.worldMarketPaymentMethodToUtmifyPaymentMethod(
+        body.payment_details.payment_method,
+      );
 
-    const transactionStatus = this.worldMarketStatusToUtmifyTransactionStatus(
-      body.order_status,
-    );
+      const transactionStatus = this.worldMarketStatusToUtmifyTransactionStatus(
+        body.order_status,
+      );
 
-    const products = this.worldMarketProductsToUtmifyProducts(body.order_details.products);
+      const products = this.worldMarketProductsToUtmifyProducts(body.order_details.products);
 
-    const customer = this.worldMarketCustomerToUtmifyCustomer(body.customer);
+      const customer = this.worldMarketCustomerToUtmifyCustomer(body.customer);
 
-    const values = this.worldMarketBodyToUtmifyValues(body.order_details);
+      const values = this.worldMarketBodyToUtmifyValues(body.order_details);
 
-    await this.usecase.execute({
-      data: {
-        saleId: body.order_id,
-        externalWebhookId: body.webhook_id,
-        platform: UtmifyIntegrationPlatform.WorldMarket,
-        paymentMethod,
-        transactionStatus,
-        products,
-        customer,
-        values,
-        createdAt: new Date(body.created_at),
-        updatedAt: new Date(),
-        paidAt: transactionStatus === UtmifyTransactionStatus.Paid ? new Date(body.payment_details.paid_at) : null,
-        refundedAt: transactionStatus === UtmifyTransactionStatus.Refunded ? new Date(body.updated_at) : null,
-      },
-      additionalInfo: {
-        currency: body.payment_details.currency,
-      },
-    });
+      await this.usecase.execute({
+        data: {
+          saleId: body.order_id,
+          externalWebhookId: body.webhook_id,
+          platform: UtmifyIntegrationPlatform.WorldMarket,
+          paymentMethod,
+          transactionStatus,
+          products,
+          customer,
+          values,
+          createdAt: new Date(body.created_at),
+          updatedAt: new Date(),
+          paidAt: transactionStatus === UtmifyTransactionStatus.Paid ? new Date(body.payment_details.paid_at) : null,
+          refundedAt: transactionStatus === UtmifyTransactionStatus.Refunded ? new Date(body.updated_at) : null,
+        },
+        additionalInfo: {
+          currency: body.payment_details.currency,
+        },
+      });
 
-    return res.status(200).send();
+      return res.status(200).send();
+    } catch(error) {
+      const errorMessage = error instanceof Error
+        ? error.message
+        : 'An unknown error occurred';
+
+      return res.status(500).send({
+        error: errorMessage,
+      });
+    }
   }
 
   worldMarketPaymentMethodToUtmifyPaymentMethod(method: WorldMarketPaymentMethod): UtmifyPaymentMethod {
