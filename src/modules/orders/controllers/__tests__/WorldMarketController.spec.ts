@@ -1,10 +1,10 @@
 import { RequestError } from '../../../../core/errors/RequestError';
 import { UtmifyOrdersRepositoryMongoose } from '../../repositories/implementations/UtmifyOrdersRepositoryMongoose';
-import { UtmifyCustomer } from '../../types/UtmifyCustomer';
-import { UtmifyPaymentMethod } from '../../types/UtmifyPaymentMethod';
-import { UtmifyProduct } from '../../types/UtmifyProduct';
-import { UtmifyTransactionStatus } from '../../types/UtmifyTransactionStatus';
-import { UtmifyValues } from '../../types/UtmifyValues';
+import { UtmifyCustomer } from '../../types/utimify/UtmifyCustomer';
+import { UtmifyPaymentMethod } from '../../types/utimify/UtmifyPaymentMethod';
+import { UtmifyProduct } from '../../types/utimify/UtmifyProduct';
+import { UtmifyTransactionStatus } from '../../types/utimify/UtmifyTransactionStatus';
+import { UtmifyValues } from '../../types/utimify/UtmifyValues';
 import { SaveUtmifyOrderUseCase, SaveUtmifyOrderUseCaseInput } from '../../usecases/SaveUtmifyOrderUseCase';
 import {
   WorldMarketBody,
@@ -14,7 +14,7 @@ import {
   WorldMarketProduct,
 } from '../WorldMarketController';
 import { App } from '../../../../server/App';
-import { UtmifyIntegrationPlatform } from '../../types/UtmifyIntegrationPlatform';
+import { UtmifyIntegrationPlatform } from '../../types/utimify/UtmifyIntegrationPlatform';
 import { Request, Response } from 'express';
 
 const repository = new UtmifyOrdersRepositoryMongoose();

@@ -2,13 +2,18 @@
 import { Request, Response } from 'express';
 import { Controller } from '../../../core/interfaces/Controller';
 import { SaveUtmifyOrderUseCase } from '../usecases/SaveUtmifyOrderUseCase';
-import { UtmifyPaymentMethod } from '../types/UtmifyPaymentMethod';
-import { UtmifyTransactionStatus } from '../types/UtmifyTransactionStatus';
-import { UtmifyProduct } from '../types/UtmifyProduct';
-import { UtmifyCustomer } from '../types/UtmifyCustomer';
-import { UtmifyValues } from '../types/UtmifyValues';
-import { UtmifyIntegrationPlatform } from '../types/UtmifyIntegrationPlatform';
+import { UtmifyPaymentMethod } from '../types/utimify/UtmifyPaymentMethod';
+import { UtmifyTransactionStatus } from '../types/utimify/UtmifyTransactionStatus';
+import { UtmifyProduct } from '../types/utimify/UtmifyProduct';
+import { UtmifyCustomer } from '../types/utimify/UtmifyCustomer';
+import { UtmifyValues } from '../types/utimify/UtmifyValues';
+import { UtmifyIntegrationPlatform } from '../types/utimify/UtmifyIntegrationPlatform';
 import { RequestError } from '../../../core/errors/RequestError';
+import { WorldMarketOrder, WorldMarketOrderDetails } from '../types/worldMarket/WorldMarketOrder';
+import { WorldMarketCustomer } from '../types/worldMarket/WorldMarketCustomer';
+import { WorldMarketProduct } from '../types/worldMarket/WorldMarketProduct';
+import { WorldMarketPaymentMethod } from '../types/worldMarket/WorldMarketPaymentMethod';
+import { WorldMarketStatus } from '../types/worldMarket/WorldMarketTransactionStatus';
 
 export class WorldMarketController implements Controller {
   private readonly usecase: SaveUtmifyOrderUseCase;
@@ -22,7 +27,7 @@ export class WorldMarketController implements Controller {
     console.log(JSON.stringify(req.body, null, 2));
     console.log(JSON.stringify(req.headers));
 
-    const body = req.body as WorldMarketBody;
+    const body = req.body as WorldMarketOrder;
 
     const paymentMethod = this.worldMarketPaymentMethodToUtmifyPaymentMethod(
       body.payment_details.payment_method,
@@ -107,75 +112,3 @@ export class WorldMarketController implements Controller {
     };
   }
 }
-
-export type WorldMarketBody = {
-  order_id: string;
-  webhook_id: string;
-  customer: WorldMarketCustomer;
-  order_details: WorldMarketOrderDetails;
-  payment_details: WorldMarketPaymentDetails;
-  shipping_details: WorldMarketShippingDetails;
-  order_status: WorldMarketStatus;
-  created_at: string;
-  updated_at: string;
-  notes: string;
-};
-
-export type WorldMarketCustomer = {
-  customer_id: string;
-  name: string;
-  email: string;
-  phone: string;
-  address: WorldMarketCustomerAddress;
-};
-
-export type WorldMarketCustomerAddress = {
-  street: string;
-  number: string;
-  neighborhood: string;
-  city: string;
-  state: string;
-  postal_code: string;
-  country?: string;
-};
-
-export type WorldMarketOrderDetails = {
-  products: WorldMarketProduct[];
-  total: number;
-  shipping_fee: number;
-  platform_fee: number;
-  seller_fee: number;
-};
-
-export type WorldMarketProduct = {
-  product_id: string;
-  name: string;
-  category: string;
-  quantity: number;
-  price_unit: number;
-  total_price: number;
-};
-
-export type WorldMarketPaymentDetails = {
-  payment_id: string;
-  payment_method: WorldMarketPaymentMethod;
-  transaction_id: string;
-  pix_key: string;
-  transaction_qr_code: string;
-  status: WorldMarketStatus;
-  expires_at?: string;
-  currency: string;
-  paid_at: string;
-};
-
-export type WorldMarketPaymentMethod = 'pix' | 'boleto' | 'credit_card';
-
-export type WorldMarketStatus = 'pending' | 'approved' | 'refunded';
-
-export type WorldMarketShippingDetails = {
-  shipping_id: string;
-  carrier: string;
-  tracking_code: string | null;
-  estimated_delivery: string;
-  status: string;
-};

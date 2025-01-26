@@ -1,6 +1,6 @@
 import { UseCase } from '../../../core/interfaces/UseCase';
 import { UtmifyOrdersRepository } from '../repositories/UtmifyOrdersRepository';
-import { UtmifyOrder } from '../types/UtmifyOrder';
+import { UtmifyOrder } from '../types/utimify/UtmifyOrder';
 
 export type SaveUtmifyOrderUseCaseInput = {
   data: UtmifyOrder;

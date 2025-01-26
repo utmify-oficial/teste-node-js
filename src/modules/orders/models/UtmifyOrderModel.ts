@@ -1,7 +1,7 @@
 import mongooose, { Schema } from 'mongoose';
-import { UtmifyIntegrationPlatform } from '../types/UtmifyIntegrationPlatform';
-import { UtmifyPaymentMethod } from '../types/UtmifyPaymentMethod';
-import { UtmifyTransactionStatus } from '../types/UtmifyTransactionStatus';
+import { UtmifyIntegrationPlatform } from '../types/utimify/UtmifyIntegrationPlatform';
+import { UtmifyPaymentMethod } from '../types/utimify/UtmifyPaymentMethod';
+import { UtmifyTransactionStatus } from '../types/utimify/UtmifyTransactionStatus';
 import { UtmifyOrderFromDb } from '../repositories/UtmifyOrdersRepository';
 
 const ProductSchema = new Schema({

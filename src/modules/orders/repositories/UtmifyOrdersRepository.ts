@@ -1,5 +1,5 @@
 import { Types } from 'mongoose';
-import { UtmifyOrder } from '../types/UtmifyOrder';
+import { UtmifyOrder } from '../types/utimify/UtmifyOrder';
 
 export interface UtmifyOrdersRepository {
   save(order: UtmifyOrder): Promise<UtmifyOrderFromDb | null>;

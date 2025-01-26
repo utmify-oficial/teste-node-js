@@ -1,9 +1,9 @@
 import { MongoDB } from '../../../../database/MongoDB';
 import { UtmifyOrderModel } from '../../models/UtmifyOrderModel';
-import { UtmifyIntegrationPlatform } from '../../types/UtmifyIntegrationPlatform';
+import { UtmifyIntegrationPlatform } from '../../types/utimify/UtmifyIntegrationPlatform';
 import { UtmifyOrder } from '../../types/UtmifyOrder';
-import { UtmifyPaymentMethod } from '../../types/UtmifyPaymentMethod';
-import { UtmifyTransactionStatus } from '../../types/UtmifyTransactionStatus';
+import { UtmifyPaymentMethod } from '../../types/utimify/UtmifyPaymentMethod';
+import { UtmifyTransactionStatus } from '../../types/utimify/UtmifyTransactionStatus';
 import { UtmifyOrdersRepositoryMongoose } from '../implementations/UtmifyOrdersRepositoryMongoose';
 
 const repository = new UtmifyOrdersRepositoryMongoose();

@@ -1,5 +1,5 @@
 import { UtmifyOrderModel } from '../../models/UtmifyOrderModel';
-import { UtmifyOrder } from '../../types/UtmifyOrder';
+import { UtmifyOrder } from '../../types/utimify/UtmifyOrder';
 import { UtmifyOrderFromDb, UtmifyOrdersRepository } from '../UtmifyOrdersRepository';
 
 export class UtmifyOrdersRepositoryMongoose implements UtmifyOrdersRepository {
