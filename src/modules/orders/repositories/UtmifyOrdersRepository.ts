@@ -3,6 +3,7 @@ import { UtmifyOrder } from '../types/UtmifyOrder';
 
 export interface UtmifyOrdersRepository {
   save(order: UtmifyOrder): Promise<UtmifyOrderFromDb | null>;
+  selectByOrderId(orderId: string): Promise<UtmifyOrderFromDb | null>;
 }
 
 export type UtmifyOrderFromDb = UtmifyOrder & {

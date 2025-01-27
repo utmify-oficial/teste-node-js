@@ -1,5 +1,5 @@
 import { UseCase } from '../../../core/interfaces/UseCase';
-import { UtmifyOrdersRepository } from '../repositories/UtmifyOrdersRepository';
+import { UtmifyOrderFromDb, UtmifyOrdersRepository } from '../repositories/UtmifyOrdersRepository';
 import { UtmifyOrder } from '../types/UtmifyOrder';
 
 export type SaveUtmifyOrderUseCaseInput = {
@@ -22,5 +22,9 @@ export class SaveUtmifyOrderUseCase implements UseCase<SaveUtmifyOrderUseCaseInp
 
   async execute(input: SaveUtmifyOrderUseCaseInput): Promise<void> {
     await this.repository.save(input.data);
+  }
+
+  async selectByOrderId(orderId: string): Promise<UtmifyOrderFromDb | null> {
+    return await this.repository.selectByOrderId(orderId);
   }
 }

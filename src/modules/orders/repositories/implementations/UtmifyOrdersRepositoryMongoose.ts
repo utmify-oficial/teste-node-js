@@ -20,4 +20,10 @@ export class UtmifyOrdersRepositoryMongoose implements UtmifyOrdersRepository {
 
     return savedOrder?.toEntity() ?? null;
   }
+
+  async selectByOrderId(orderId: string): Promise<UtmifyOrderFromDb | null> {
+    const selectedOrder = await UtmifyOrderModel.findOne({saleId: orderId});
+    
+    return selectedOrder?.toEntity() ?? null;
+  }
 }

@@ -10,10 +10,10 @@ export type UtmifyOrder = {
   externalWebhookId: string;
   platform: UtmifyIntegrationPlatform;
   paymentMethod: UtmifyPaymentMethod;
-  transactionStatus: UtmifyTransactionStatus;
+  transactionStatus: UtmifyTransactionStatus | Promise<UtmifyTransactionStatus>;
   products: UtmifyProduct[];
   customer: UtmifyCustomer;
-  values: UtmifyValues;
+  values: UtmifyValues | Promise<UtmifyValues>;
   createdAt: Date;
   updatedAt: Date;
   paidAt: Date | null;

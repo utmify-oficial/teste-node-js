@@ -1,5 +1,5 @@
 export enum UtmifyTransactionStatus {
   Pending = 'Pending',
   Paid = 'Paid',
-  Refunded = 'Refunded'
+  Refunded = 'Refunded',
 }
