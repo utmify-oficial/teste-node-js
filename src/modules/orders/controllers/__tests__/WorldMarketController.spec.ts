@@ -1,10 +1,10 @@
 import { RequestError } from '../../../../core/errors/RequestError';
 import { UtmifyOrdersRepositoryMongoose } from '../../repositories/implementations/UtmifyOrdersRepositoryMongoose';
-import { UtmifyCustomer } from '../../types/utimify/UtmifyCustomer';
-import { UtmifyPaymentMethod } from '../../types/utimify/UtmifyPaymentMethod';
-import { UtmifyProduct } from '../../types/utimify/UtmifyProduct';
-import { UtmifyTransactionStatus } from '../../types/utimify/UtmifyTransactionStatus';
-import { UtmifyValues } from '../../types/utimify/UtmifyValues';
+import { UtmifyCustomer } from '../../types/utmify/UtmifyCustomer';
+import { UtmifyPaymentMethod } from '../../types/utmify/UtmifyPaymentMethod';
+import { UtmifyProduct } from '../../types/utmify/UtmifyProduct';
+import { UtmifyTransactionStatus } from '../../types/utmify/UtmifyTransactionStatus';
+import { UtmifyValues } from '../../types/utmify/UtmifyValues';
 import { SaveUtmifyOrderUseCase, SaveUtmifyOrderUseCaseInput } from '../../usecases/SaveUtmifyOrderUseCase';
 import { WorldMarketController } from '../WorldMarketController';
 import { WorldMarketOrder } from '../../types/worldMarket/WorldMarketOrder';
@@ -12,7 +12,7 @@ import { WorldMarketCustomer } from '../../types/worldMarket/WorldMarketCustomer
 import { WorldMarketOrderDetails } from '../../types/worldMarket/WorldMarketOrder';
 import { WorldMarketProduct } from '../../types/worldMarket/WorldMarketProduct';
 import { App } from '../../../../server/App';
-import { UtmifyIntegrationPlatform } from '../../types/utimify/UtmifyIntegrationPlatform';
+import { UtmifyIntegrationPlatform } from '../../types/utmify/UtmifyIntegrationPlatform';
 import { Request, Response } from 'express';
 
 const repository = new UtmifyOrdersRepositoryMongoose();

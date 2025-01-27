@@ -4,10 +4,13 @@ import express, { Application } from 'express';
 import 'express-async-errors';
 import morgan from 'morgan';
 import http from 'http';
+import swaggerJsdoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
 
 import { Env } from './Env';
 import { router } from './routes/router';
 import { ErrorMiddleware } from './middlewares/ErrorMiddleware';
+import { swaggerOptions } from '../docs/swagger';
 
 export class App {
   static server: http.Server;
@@ -26,6 +29,8 @@ export class App {
     app.use(cors({ origin: '*' }));
     app.use(morgan('dev'));
     app.use(router);
+    const swaggerDocs = swaggerJsdoc(swaggerOptions);
+    app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
     app.use(ErrorMiddleware.handle);
   }
 

@@ -2,12 +2,12 @@
 import { Request, Response } from 'express';
 import { Controller } from '../../../core/interfaces/Controller';
 import { SaveUtmifyOrderUseCase } from '../usecases/SaveUtmifyOrderUseCase';
-import { UtmifyPaymentMethod } from '../types/utimify/UtmifyPaymentMethod';
-import { UtmifyTransactionStatus } from '../types/utimify/UtmifyTransactionStatus';
-import { UtmifyProduct } from '../types/utimify/UtmifyProduct';
-import { UtmifyCustomer } from '../types/utimify/UtmifyCustomer';
-import { UtmifyValues } from '../types/utimify/UtmifyValues';
-import { UtmifyIntegrationPlatform } from '../types/utimify/UtmifyIntegrationPlatform';
+import { UtmifyPaymentMethod } from '../types/utmify/UtmifyPaymentMethod';
+import { UtmifyTransactionStatus } from '../types/utmify/UtmifyTransactionStatus';
+import { UtmifyProduct } from '../types/utmify/UtmifyProduct';
+import { UtmifyCustomer } from '../types/utmify/UtmifyCustomer';
+import { UtmifyValues } from '../types/utmify/UtmifyValues';
+import { UtmifyIntegrationPlatform } from '../types/utmify/UtmifyIntegrationPlatform';
 import { RequestError } from '../../../core/errors/RequestError';
 import { WorldMarketOrder, WorldMarketOrderDetails } from '../types/worldMarket/WorldMarketOrder';
 import { WorldMarketCustomer } from '../types/worldMarket/WorldMarketCustomer';
@@ -64,7 +64,7 @@ export class WorldMarketController implements Controller {
         },
       });
 
-      return res.status(200).send();
+      return res.status(201).send();
     } catch(error) {
       const errorMessage = error instanceof Error
         ? error.message

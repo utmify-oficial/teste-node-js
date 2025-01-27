@@ -84,7 +84,11 @@ yarn test
 - ✅ Foi implementada uma validação em UtmifyOrdersRepositoryMongoose.
 - ✅ Optei por definir ```Prioridade``` para cada status da transação e fazer a comparação.
 
+### Documentação e CI/CD
 
+- ✅ Foi feita a documentação da API com o Swagger.
+- ✅ A rota para acessar a documentação é  ```/docs```.
+- ✅ Foi criado workflow no github para realizar os testes.
 
 <br/>
 

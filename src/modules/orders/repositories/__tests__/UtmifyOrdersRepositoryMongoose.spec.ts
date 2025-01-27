@@ -1,9 +1,9 @@
 import { MongoDB } from '../../../../database/MongoDB';
 import { UtmifyOrderModel } from '../../models/UtmifyOrderModel';
-import { UtmifyIntegrationPlatform } from '../../types/utimify/UtmifyIntegrationPlatform';
-import { UtmifyOrder } from '../../types/utimify/UtmifyOrder';
-import { UtmifyPaymentMethod } from '../../types/utimify/UtmifyPaymentMethod';
-import { UtmifyTransactionStatus } from '../../types/utimify/UtmifyTransactionStatus';
+import { UtmifyIntegrationPlatform } from '../../types/utmify/UtmifyIntegrationPlatform';
+import { UtmifyOrder } from '../../types/utmify/UtmifyOrder';
+import { UtmifyPaymentMethod } from '../../types/utmify/UtmifyPaymentMethod';
+import { UtmifyTransactionStatus } from '../../types/utmify/UtmifyTransactionStatus';
 import { UtmifyOrdersRepositoryMongoose } from '../implementations/UtmifyOrdersRepositoryMongoose';
 
 const repository = new UtmifyOrdersRepositoryMongoose();
@@ -16,7 +16,7 @@ describe('save', () => {
     externalWebhookId: 'externalWebhookId',
     paymentMethod: UtmifyPaymentMethod.Pix,
     platform: UtmifyIntegrationPlatform.WorldMarket,
-    transactionStatus: UtmifyTransactionStatus.Paid,
+    transactionStatus: UtmifyTransactionStatus.Pending,
     paidAt: new Date('2025-01-25T12:00:00Z'),
     products: [{
       id: 'id',
@@ -60,7 +60,7 @@ describe('save', () => {
     const savedOrder = await repository.save(baseData);
 
     const updateDate = new Date('2025-01-25T16:00:00Z');
-    const updatedOrder = await repository.save({ ...baseData, updatedAt: updateDate });
+    const updatedOrder = await repository.save({ ...baseData, transactionStatus: UtmifyTransactionStatus.Paid, updatedAt: updateDate });
 
     expect(savedOrder).not.toBeNull();
     expect(updatedOrder).not.toBeNull();
@@ -76,7 +76,7 @@ describe('save', () => {
 
 describe('save with existing order', () => {
   const baseData = {
-    saleId: 'existingSaleId',
+    saleId: Math.random().toString(),
     externalWebhookId: 'existingWebhookId',
     paymentMethod: UtmifyPaymentMethod.Pix,
     platform: UtmifyIntegrationPlatform.WorldMarket,
@@ -112,7 +112,7 @@ describe('save with existing order', () => {
     await UtmifyOrderModel.create(baseData);
   });
 
-  afterAll(async () => {
+  afterEach(async () => {
     await UtmifyOrderModel.deleteOne({
       saleId: baseData.saleId,
       platform: baseData.platform,
@@ -130,6 +130,26 @@ describe('save with existing order', () => {
     expect(updatedOrder).not.toBeNull();
     expect(updatedOrder?.transactionStatus).toBe(UtmifyTransactionStatus.Paid);
   });
-});
 
+  it('should not update the order when status change is invalid (Paid -> Pending)', async () => {
+    const repository = new UtmifyOrdersRepositoryMongoose();
+    const data = {
+      ...baseData,
+      saleId: Math.random().toString(),
+      externalWebhookId: 'testWebhookId',
+      transactionStatus: UtmifyTransactionStatus.Paid,
+    };
+    const invalidUpdate = {
+      ...data,
+      transactionStatus: UtmifyTransactionStatus.Pending,
+    };
+
+    await UtmifyOrderModel.create(data);
+
+    await expect(repository.save(invalidUpdate)).rejects.toThrow(
+      'Attempt to update order status from Paid to Pending, which is not allowed.',
+    );
+
+  });
+});
 afterAll(async () => await MongoDB.disconnect());

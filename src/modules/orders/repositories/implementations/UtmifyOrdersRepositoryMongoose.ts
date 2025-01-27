@@ -1,6 +1,6 @@
 import { UtmifyOrderModel } from '../../models/UtmifyOrderModel';
-import { UtmifyOrder } from '../../types/utimify/UtmifyOrder';
-import { UtmifyTransactionStatus } from '../../types/utimify/UtmifyTransactionStatus';
+import { UtmifyOrder } from '../../types/utmify/UtmifyOrder';
+import { UtmifyTransactionStatus } from '../../types/utmify/UtmifyTransactionStatus';
 import { UtmifyOrderFromDb, UtmifyOrdersRepository } from '../UtmifyOrdersRepository';
 
 export class UtmifyOrdersRepositoryMongoose implements UtmifyOrdersRepository {
@@ -48,6 +48,6 @@ export class UtmifyOrdersRepositoryMongoose implements UtmifyOrdersRepository {
       Refunded: 3,
     };
 
-    return statusPriority[newStatus] >= statusPriority[currentStatus];
+    return statusPriority[newStatus] > statusPriority[currentStatus];
   }
 }
