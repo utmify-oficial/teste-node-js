@@ -1,5 +1,7 @@
+import { RootFilterQuery } from 'mongoose';
 import { UtmifyOrderModel } from '../../models/UtmifyOrderModel';
 import { UtmifyOrder } from '../../types/UtmifyOrder';
+import { UtmifyTransactionStatus } from '../../types/UtmifyTransactionStatus';
 import { UtmifyOrderFromDb, UtmifyOrdersRepository } from '../UtmifyOrdersRepository';
 
 export class UtmifyOrdersRepositoryMongoose implements UtmifyOrdersRepository {
@@ -9,12 +11,24 @@ export class UtmifyOrdersRepositoryMongoose implements UtmifyOrdersRepository {
     const savedOrder = await model.save().catch(async (e) => {
       if (!e.message.includes('duplicate key error')) throw e;
 
-      const updatedOrder = await UtmifyOrderModel.findOneAndUpdate({
+      const filter: RootFilterQuery<UtmifyOrder> = {
         saleId: order.saleId,
         platform: order.platform,
         externalWebhookId: order.externalWebhookId,
-      }, order, { new: true });
+      };
 
+      if (order.transactionStatus === UtmifyTransactionStatus.Pending) {
+        filter.$nor = [
+          { transactionStatus: UtmifyTransactionStatus.Paid },
+          { transactionStatus: UtmifyTransactionStatus.Refunded }
+        ];
+      }
+
+      if (order.transactionStatus === UtmifyTransactionStatus.Paid) {
+        filter.$nor = [{ transactionStatus: UtmifyTransactionStatus.Refunded }];
+      }
+
+      const updatedOrder = await UtmifyOrderModel.findOneAndUpdate(filter, order, { new: true });
       return updatedOrder;
     });
 

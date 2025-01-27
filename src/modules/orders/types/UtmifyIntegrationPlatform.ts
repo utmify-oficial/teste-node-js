@@ -1,3 +1,4 @@
 export enum UtmifyIntegrationPlatform {
-  WorldMarket = 'WorldMarket'
+  AllOffers = 'AllOffers',
+  WorldMarket = 'WorldMarket',
 }

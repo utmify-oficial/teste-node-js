@@ -72,6 +72,41 @@ describe('save', () => {
 
     await UtmifyOrderModel.deleteOne({ _id: savedOrder?._id });
   });
+
+  it('should not update order if in DB is paid and received is pending', async () => {
+    const baseData = getBaseData();
+
+    const savedOrder = await repository.save(baseData);
+
+    const updatedOrder = await repository.save({ ...baseData, transactionStatus: UtmifyTransactionStatus.Pending });
+
+    expect(savedOrder).not.toBeNull();
+    expect(updatedOrder).toBeNull();
+
+    expect(savedOrder?._id?.toString()).not.toEqual(updatedOrder?._id?.toString());
+
+    expect(savedOrder?.updatedAt).toEqual(baseData.updatedAt);
+
+    await UtmifyOrderModel.deleteOne({ _id: savedOrder?._id });
+  });
+
+  it('should not update order if in DB is refunded and received is paid', async () => {
+    const baseData = getBaseData();
+    baseData.transactionStatus = UtmifyTransactionStatus.Refunded;
+
+    const savedOrder = await repository.save(baseData);
+
+    const updatedOrder = await repository.save({ ...baseData, transactionStatus: UtmifyTransactionStatus.Paid });
+
+    expect(savedOrder).not.toBeNull();
+    expect(updatedOrder).toBeNull();
+
+    expect(savedOrder?._id?.toString()).not.toEqual(updatedOrder?._id?.toString());
+
+    expect(savedOrder?.updatedAt).toEqual(baseData.updatedAt);
+
+    await UtmifyOrderModel.deleteOne({ _id: savedOrder?._id });
+  });
 });
 
 afterAll(async () => await MongoDB.disconnect());
