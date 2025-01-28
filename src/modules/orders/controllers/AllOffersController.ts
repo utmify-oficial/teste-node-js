@@ -92,10 +92,21 @@ export class AllOffersController implements Controller {
   }
 
   async allOffersBodyToUtmifyValues(body: AllOffersBody): Promise<UtmifyValues> {
-    const totalValueInCents = convertToBRL(body.TotalSaleAmount, body.Currency);
-    const sellerValueInCents = convertToBRL(body.UserCommission, body.Currency);
-    const platformValueInCents = convertToBRL(body.PlatformCommission, body.Currency);
-  
+    const totalValueInCents = (await this.convertOrderCurrencyAction.execute({
+      amount: body.TotalSaleAmount,
+      currency: body.Currency,
+    })).amountInCents;
+
+    const sellerValueInCents = (await this.convertOrderCurrencyAction.execute({
+      amount: body.UserCommission,
+      currency: body.Currency,
+    })).amountInCents;
+
+    const platformValueInCents = (await this.convertOrderCurrencyAction.execute({
+      amount: body.PlatformCommission,
+      currency: body.Currency,
+    })).amountInCents;
+
     return {
       totalValueInCents,
       sellerValueInCents,
@@ -103,16 +114,4 @@ export class AllOffersController implements Controller {
       shippingValueInCents: body.ShippingDetails.ShippingFee * 100,
     };
   }
-}
-
-function convertToBRL(amount: number, currency: string): number {
-    switch (currency) {
-        case 'USD':
-            return amount * 5.2; // Example conversion rate
-        case 'EUR':
-            return amount * 6.1; // Example conversion rate
-        case 'BRL':
-        default:
-            return amount;
-    }
 }
