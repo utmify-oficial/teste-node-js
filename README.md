@@ -1,4 +1,4 @@
-Resolução do Desafio - Webhook AllOffers
+#Resolução do Desafio - Webhook AllOffers
 
 🔍 Visão Geral
 
@@ -8,37 +8,37 @@ Neste desafio, foi implementada uma rota dedicada para tratar os payloads do web
 
 1. 🛠️ Tratamento de Webhook
 
-Rota criada para receber e processar os payloads do webhook.
+- ✅ Rota criada para receber e processar os payloads do webhook.
 
-Estrutura alinhada à arquitetura do projeto.
+- ✅ Estrutura alinhada à arquitetura do projeto.
 
 2. 🌍 Conversão de Moeda com API ExchangeRate
 
-Utilização da API ExchangeRate (https://www.exchangerate-api.com/docs/overview) na classe ConvertOrderCurrencyAction para conversão dinâmica de moedas.
+- ✅ Utilização da API ExchangeRate (https://www.exchangerate-api.com/docs/overview) na classe ConvertOrderCurrencyAction para conversão dinâmica de moedas.
 
 🔍 Motivos da escolha:
 
-Atualização em tempo real.
+- ✅ Atualização em tempo real.
 
-Documentação clara e intuitiva.
+- ✅ Documentação clara e intuitiva.
 
-Custo acessível, facilitando a escalabilidade do projeto.
+- ✅ Custo acessível, facilitando a escalabilidade do projeto.
 
 3. ⚙️ Lógica Aprimorada para Status de Pedidos
 
-Implementação de todas as condições necessárias para o tratamento de status.
+- ✅ Implementação de todas as condições necessárias para o tratamento de status.
 
-Adição de uma condição extra:
+- ✅ Adição de uma condição extra:
 
-Impede que pedidos com status anterior "Pending" sejam atualizados para "Refunded".
+- ✅ Impede que pedidos com status anterior "Pending" sejam atualizados para "Refunded".
 
-Evita erros lógicos, pois um pedido não pode ser reembolsado sem antes ter seu pagamento confirmado.
+- ✅ Evita erros lógicos, pois um pedido não pode ser reembolsado sem antes ter seu pagamento confirmado.
 
 4. 🔧 Testes para Garantia da Qualidade
 
-Implementação de testes para validar a qualidade e eficiência do código.
+- ✅ Implementação de testes para validar a qualidade e eficiência do código.
 
-Cobertura de casos críticos do webhook.
+- ✅ Cobertura de casos críticos do webhook.
 
 🏆 Minha Experiência e Atenção aos Detalhes
 

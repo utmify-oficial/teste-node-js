@@ -1,12 +1,10 @@
 /* eslint-disable no-console */
 import mongoose from "mongoose";
-import { config } from "dotenv";
-
-config();
+import { Env } from "../server/Env";
 
 export class MongoDB {
   static async connect(): Promise<void> {
-    await mongoose.connect(process.env.MONGODB_URL as string);
+    await mongoose.connect(Env.vars.MONGODB_URL);
     console.log("MongoDB connected");
   }
 
