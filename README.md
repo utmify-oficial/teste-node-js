@@ -44,7 +44,7 @@ Cobertura de casos críticos do webhook.
 
 Minha experiência como freelancer me ensinou a estar atento à lógica de negócios e aos detalhes críticos da aplicação, o que me ajudou a identificar a necessidade de uma verificação extra nos status dos pedidos.
 
-Pelas minhas pesquisas, a Utmify tem pouquíssimas reclamações em sites como Reclame Aqui, reforçando a importância de um código bem estruturado e, principalmente, dos pequenos detalhes que fazem total diferença para manter e evoluir a plataforma, bem como seus clientes.
+Pelas minhas pesquisas, a Utmify tem pouquíssimas reclamações em sites como Reclame Aqui (https://www.reclameaqui.com.br/empresa/utmify-tecnologia/), reforçando a importância de um código bem estruturado e, principalmente, dos pequenos detalhes que fazem total diferença para manter e evoluir a plataforma, bem como seus clientes.
 
 A condição extra implementada é um reflexo direto dessa atenção aos detalhes, prevenindo falhas de negócio antes que ocorram.
 
