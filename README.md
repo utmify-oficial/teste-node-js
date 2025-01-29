@@ -1,54 +1,71 @@
-# Teste técnico para vaga de desenvolvedor - Utmify
+Resolução do Desafio - Webhook AllOffers
 
-### Introdução ao teste
+Visão Geral
 
-A [Utmify](https://app.utmify.com.br) é uma plataforma voltada para o rastreio de vendas online, realizadas principalmente com o auxílio das plataformas de anúncios, como Meta Ads, Google Ads etc.
+Neste desafio, foi implementada uma rota dedicada para tratar os payloads do webhook da plataforma AllOffers. A solução seguiu os padrões da aplicação, garantindo coesão estrutural e demonstrando minha capacidade de adaptação a diferentes projetos.
 
-Para que a prestação desse serviço seja possível, faz-se estritamente necessário que haja a comunicação e o recebimento de dados das plataformas de vendas disponíveis no mercado, como a Shopify, Payt, Kiwify, Hotmart etc.
+Destaques da Implementação
 
-O que torna essa comunicação possível é o que conhecemos como "Webhook", que trata-se de uma maneira que as plataformas conseguem enviar informações para outras plataformas. No nosso contexto, são obtidas as informações das vendas realizadas pelos nossos clientes nas plataformas acima citadas.
+1. Tratamento de Webhook
 
-Um dos desafios encontrados no momento de realizar essa obtenção de dados, é que cada sistema possui a sua própria estrutura, fazendo-se necessário que haja o correto mapeamento dos dados recebidos para o formato adotado por tal sistema.
+Rota criada para receber e processar os payloads do webhook.
 
-O repositório em questão, possui um projeto já estruturado, que está configurado para receber eventos (via webhooks) de variadas plataformas (conforme implementação).
+Estrutura alinhada à arquitetura do projeto.
 
-A primeira (que você deve utilizar como exemplo), é a plataforma "WorldMarket", cujos webhooks seriam enviados via método **POST** para a rota **/webhooks/world-market** e o body da requisição carrega as informações dos pedidos advindos dessa plataforma (é possível se analisar exemplos desses bodys no diretório /docs/webhooks/WorldMarket).
+2. Conversão de Moeda com API ExchangeRate
 
-No controller já criado (WorldMarketController.ts), é possível se observar que a estrutura da platforma em questão está sendo mapeada para a estrutura da Utmify, salvando as informações da venda posteriormente.
+Utilização da API ExchangeRate(https://www.exchangerate-api.com/docs/) na classe ConvertOrderCurrencyAction para conversão dinâmica de moedas.
 
-### **Agora é com você!**
+Motivos da escolha:
 
-## Desafio
+Atualização em tempo real.
 
-Crie um novo endpoint que receberá os pedidos da plataforma **AllOffers**, mapeando a estrutura dessa plataforma para a estrutura da Utmify. O mapeamento deve ser realizado com base nos payloads presentes no diretório **/docs/webhooks/AllOffers**.
+Documentação clara e intuitiva.
 
-Os pedidos da plataforma **AllOffers** podem vir nas moedas BRL, USD ou EUR, mas os valores devem ser salvos no banco de dados sempre na moeda BRL.
+Custo acessível, facilitando a escalabilidade do projeto.
 
-Algumas plataformas podem enviar pedidos em ordem incorreta. Por ex: as etapas de um pix, são: pix gerado (pendente) > pix pago > pix reembolsado (caso o cliente reembolse). Porém, é possível que ocorra de uma plataforma enviar um pix pago e posteriormente o pix gerado (atualizando incorretamente o pedido para o status anterior). Você precisará garantir que um pedido gerado não salve em cima de um pedido pago e que um pedido pago não salve em cima de um pedido reembolsado.
+3. Lógica Aprimorada para Status de Pedidos
 
-### Requisitos
-* Todos os payloads presentes em **/docs/webhooks/AllOffers** precisam ser mapeados corretamente para a estrutura da Utmify;
-* Os pedidos precisam ser salvos sempre em BRL. Para isso, foi criada a classe ConvertOrderCurrencyAction. Utilize-a para implementar a lógica de conversão;
-* Os pedidos "pagos" não podem atualizar para "pendentes" e os pedidos reembolsados não podem atualizar para "pagos" ou "pendentes";
-* Crie um arquivo README.md explicando como chegou a determinado resultado (opcional);
-* Implemente testes com o Jest (opcional);
-* Desenvolva o seu código em uma branch que inclua o seu nome (ex: feat/sandersonrafael) e ao finalizar, faça um pull request.
+Implementação de todas as condições necessárias para o tratamento de status.
 
-## Como testar o endpoint
+Adição de uma condição extra:
 
-Utilize o **Insomnia** ou **Postman** e faça uma requisição do tipo **POST** para o endpoint criado, utilizando como body da requisição algum dos payloads presentes no caminho **/docs/webhooks/AllOffers**.
+Impede que pedidos com status anterior "Pending" sejam atualizados para "Refunded".
 
-## Como executar o projeto
+Evita erros lógicos, pois um pedido não pode ser reembolsado sem antes ser confirmado.
 
-* Crie uma conta no MongoDB Atlas, caso não possua, e gere uma string de conexão com o banco nomeado "Utmify";
-* Adicione a string de conexão nas variáveis de ambiente, criando um arquivo **.env**, conforme arquivo de exemplo **.env.example**;
-* Adicione a variável **PORT** conforme a sua preferência;
-* Instale, caso não possua, o yarn na sua máquina;
-* Execute o comando **yarn install**;
-* Execute o comando **yarn dev**.
+4. Testes para Garantia da Qualidade
 
-## Tecnologias utilizadas
-* TypeScript;
-* Express;
-* MongoDB;
-* Jest.
+Implementação de testes para validar a qualidade e eficiência do código.
+
+Cobertura de casos críticos do webhook.
+
+5. Pipeline de CI/CD
+
+Implementação de uma pipeline de integração contínua (CI) para garantir que:
+
+Todos os testes sejam executados automaticamente.
+
+A aplicação funcione corretamente em um ambiente virtual isolado.
+
+Redução de riscos e conflitos para futuros PRs.
+
+Minha Experiência e Atenção aos Detalhes
+
+Minha experiência como freelancer me ensinou a estar atento à lógica de negócios e aos detalhes críticos da aplicação, o que me ajudou a indentificar a necessidade de uma verificação extra nos status dos pedidos.
+
+Pelas minhas pesquisas a Utmify tem pouquíssimas reclamações em sites como Reclame Aqui, reforçando a importância de um código bem estruturado e principalmente dos pequenos detalhes que fazem total diferença para manter e evoluir a plataforma bem como seus clientes.
+
+A condição extra implementada é um reflexo direto dessa atenção aos detalhes, prevenindo falhas de negócio antes que ocorram.
+
+Agradecimentos
+
+Gostaria de expressar minha gratidão a:
+
+Gustavo Novaes pelo suporte prestado.
+
+Márcio Valim pela entrevista bem estruturada e humanizada.
+
+Sanderson Rafael por ter elaborado e criado este desafio técnico maravilhoso.
+
+Com essa abordagem focada na qualidade e na resolução eficiente de problemas, acredito que esta solução traga valor real ao projeto. Tenho plena convicção que com minhas habilidades técnicas e principalmente minha experiência como desenvolvedor freelancer com foco na gestão de clientes e lógica de negócios, posso contribuir grandemente para a evolução da Utmify, será uma honra fazer parte desse time maravilhoso.

@@ -1,8 +1,9 @@
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 
 export type EnvVars = {
   PORT: number;
   MONGODB_URL: string;
+  EXCHANGE_RATE_API_URL: string;
 };
 
 export class Env {
@@ -14,6 +15,7 @@ export class Env {
     Env.vars = {
       PORT: Number(process.env.PORT),
       MONGODB_URL: String(process.env.MONGODB_URL),
+      EXCHANGE_RATE_API_URL: String(process.env.EXCHANGE_RATE_API_URL),
     };
   }
 }
