@@ -40,16 +40,6 @@ Implementação de testes para validar a qualidade e eficiência do código.
 
 Cobertura de casos críticos do webhook.
 
-5. Pipeline de CI/CD
-
-Implementação de uma pipeline de integração contínua (CI) para garantir que:
-
-Todos os testes sejam executados automaticamente.
-
-A aplicação funcione corretamente em um ambiente virtual isolado.
-
-Redução de riscos e conflitos para futuros PRs.
-
 Minha Experiência e Atenção aos Detalhes
 
 Minha experiência como freelancer me ensinou a estar atento à lógica de negócios e aos detalhes críticos da aplicação, o que me ajudou a indentificar a necessidade de uma verificação extra nos status dos pedidos.
