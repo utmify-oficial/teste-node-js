@@ -7,20 +7,28 @@ import { UtmifyIntegrationPlatform } from '../types/UtmifyIntegrationPlatform';
 import { AllOffersTransformationService } from '../services/AllOffersTransformationService';
 import { AllOffersBody } from '../types/AllOffers';
 import { ConvertOrderCurrencyAction } from '../actions/ConvertOrderCurrencyAction';
+import { UtmifyOrdersRepository } from '../repositories/UtmifyOrdersRepository';
+import { AllOffersOrderValidationService } from '../services/AllOffersOrderValidationService';
 
 export class AllOffersController implements Controller {
   private readonly usecase: SaveUtmifyOrderUseCase;
   private readonly transformationService: AllOffersTransformationService;
   private readonly currencyConverter: ConvertOrderCurrencyAction;
+  private readonly orderRepository: UtmifyOrdersRepository;
+  private readonly orderValidationService: AllOffersOrderValidationService;
 
   constructor(
     usecase: SaveUtmifyOrderUseCase,
     transformationService: AllOffersTransformationService,
     currencyConverter: ConvertOrderCurrencyAction,
+    orderRepository: UtmifyOrdersRepository,
+    orderValidationService: AllOffersOrderValidationService,
   ) {
     this.usecase = usecase;
     this.transformationService = transformationService;
     this.currencyConverter = currencyConverter;
+    this.orderRepository = orderRepository;
+    this.orderValidationService = orderValidationService;
 
   }
 
@@ -29,6 +37,17 @@ export class AllOffersController implements Controller {
     console.log(JSON.stringify(req.body, null, 2));
 
     const body = req.body as AllOffersBody;
+
+    const existingOrder = await this.orderRepository.findBySaleId(body.OrderId);
+
+    const newTransactionStatus = this.transformationService.transformTransactionStatus(body.SaleStatus);
+
+    if (existingOrder) {
+      this.orderValidationService.validateStatusTransition(
+        existingOrder.transactionStatus,
+        newTransactionStatus,
+      );
+    }
 
     const paymentMethod = this.transformationService.transformPaymentMethod(body.PaymentMethod);
     const transactionStatus = this.transformationService.transformTransactionStatus(body.SaleStatus);
@@ -41,7 +60,6 @@ export class AllOffersController implements Controller {
       PlatformCommission: body.PlatformCommission,
     });
 
-    // Garante que não há valores nulos antes da conversão
     const valuesToConvert = {
       totalValueInCents: utmifyValues.totalValueInCents,
       sellerValueInCents: utmifyValues.sellerValueInCents,
@@ -49,7 +67,6 @@ export class AllOffersController implements Controller {
       shippingValueInCents: utmifyValues.shippingValueInCents ?? 0, // Garante um número
     };
 
-    // Depois converte a moeda se necessário
     const { convertedValues, convertedItems } = await this.currencyConverter.execute({
       originalCurrency: body.Currency,
       values: valuesToConvert,

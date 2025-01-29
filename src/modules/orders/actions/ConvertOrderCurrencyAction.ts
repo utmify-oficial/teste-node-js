@@ -19,7 +19,6 @@ interface OrderItem {
   ItemSku: string;
 }
 
-// Interface de entrada
 export interface ConvertOrderCurrencyActionInput {
   originalCurrency: string;
   values: OrderValues;
@@ -27,7 +26,6 @@ export interface ConvertOrderCurrencyActionInput {
 
 }
 
-// Interface de saída
 export interface ConvertOrderCurrencyActionOutput {
   convertedValues: OrderValues;
   convertedItems: OrderItem[];
@@ -48,7 +46,6 @@ interface AwesomeApiResponse {
     create_date: string;
   }
 }
-// Implementação da Action usando as interfaces
 export class ConvertOrderCurrencyAction implements Action<ConvertOrderCurrencyActionInput, ConvertOrderCurrencyActionOutput> {
   private readonly BASE_URL = 'https://economia.awesomeapi.com.br/json/last';
 

@@ -7,10 +7,12 @@ import {
 } from '../../modules/orders/repositories/implementations/UtmifyOrdersRepositoryMongoose';
 import { ConvertOrderCurrencyAction } from '../../modules/orders/actions/ConvertOrderCurrencyAction';
 import { AllOffersTransformationService } from '../../modules/orders/services/AllOffersTransformationService';
+import { AllOffersOrderValidationService } from '../../modules/orders/services/AllOffersOrderValidationService';
 
 const webhookRouter = Router();
 const allOffersTransformationService = new AllOffersTransformationService();
 const currencyConverter = new ConvertOrderCurrencyAction();
+const allOffersOrderTransformationService = new AllOffersOrderValidationService();
 
 const utmifyOrdersRepository = new UtmifyOrdersRepositoryMongoose();
 const saveUtmifyOrderusecase = new SaveUtmifyOrderUseCase(utmifyOrdersRepository);
@@ -19,6 +21,8 @@ const allOffersController = new AllOffersController(
   saveUtmifyOrderusecase,
   allOffersTransformationService,
   currencyConverter,
+  utmifyOrdersRepository,
+  allOffersOrderTransformationService,
 );
 
 webhookRouter.post('/world-market', async (req, res) => {
