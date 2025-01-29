@@ -10,9 +10,9 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      PORT: 3000
-      MONGODB_URL: "mongodb+srv://alexsantoswebdeveloper:Alphometa-7804@utmify.txarl.mongodb.net/?retryWrites=true&w=majority&appName=Utmify"
-      EXCHANGE_RATE_API_URL: "https://v6.exchangerate-api.com/v6/e0cfaf3a14e1b2e1b320517e/latest/"
+      PORT: ${{ secrets.PORT }}
+      MONGODB_URL: ${{ secrets.MONGODB_URL }}
+      EXCHANGE_RATE_API_URL: ${{ secrets.EXCHANGE_RATE_API_URL }}
 
     steps:
       - name: Checkout repository
