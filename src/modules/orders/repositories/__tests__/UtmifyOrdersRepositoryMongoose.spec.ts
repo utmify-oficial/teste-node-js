@@ -10,37 +10,38 @@ const repository = new UtmifyOrdersRepositoryMongoose();
 
 beforeAll(async () => await MongoDB.connect());
 
+const getBaseData = (): UtmifyOrder => ({
+  saleId: Math.random().toString(),
+  externalWebhookId: 'externalWebhookId',
+  paymentMethod: UtmifyPaymentMethod.Pix,
+  platform: UtmifyIntegrationPlatform.WorldMarket,
+  transactionStatus: UtmifyTransactionStatus.Paid,
+  paidAt: new Date('2025-01-25T12:00:00Z'),
+  products: [{
+    id: 'id',
+    name: 'name',
+    priceInCents: 0,
+    quantity: 1,
+  }],
+  refundedAt: null,
+  customer: {
+    country: 'country',
+    email: 'email',
+    fullName: 'fullName',
+    id: 'id',
+    phone: 'phone',
+  },
+  values: {
+    platformValueInCents: 0,
+    sellerValueInCents: 0,
+    shippingValueInCents: 0,
+    totalValueInCents: 0,
+  },
+  createdAt: new Date('2025-01-25T12:00:00Z'),
+  updatedAt: new Date('2025-01-25T12:00:00Z'),
+});
+
 describe('save', () => {
-  const getBaseData = () => ({
-    saleId: Math.random().toString(),
-    externalWebhookId: 'externalWebhookId',
-    paymentMethod: UtmifyPaymentMethod.Pix,
-    platform: UtmifyIntegrationPlatform.WorldMarket,
-    transactionStatus: UtmifyTransactionStatus.Paid,
-    paidAt: new Date('2025-01-25T12:00:00Z'),
-    products: [{
-      id: 'id',
-      name: 'name',
-      priceInCents: 0,
-      quantity: 1,
-    }],
-    refundedAt: null,
-    customer: {
-      country: 'country',
-      email: 'email',
-      fullName: 'fullName',
-      id: 'id',
-      phone: 'phone',
-    },
-    values: {
-      platformValueInCents: 0,
-      sellerValueInCents: 0,
-      shippingValueInCents: 0,
-      totalValueInCents: 0,
-    },
-    createdAt: new Date('2025-01-25T12:00:00Z'),
-    updatedAt: new Date('2025-01-25T12:00:00Z'),
-  } as UtmifyOrder);
 
   it('should save new order correctly', async () => {
     const savedOrder = await repository.save(getBaseData());
@@ -71,6 +72,25 @@ describe('save', () => {
     expect(updatedOrder?.updatedAt).toEqual(updateDate);
 
     await UtmifyOrderModel.deleteOne({ _id: savedOrder?._id });
+  });
+});
+
+describe('getTransactionStatusBySaleId', function() {
+  it('should return order when exists', async function() {
+    const baseData = getBaseData();
+
+    const savedOrder = await repository.save(baseData);
+
+    const foundOrder = await repository.getTransactionStatusBySaleId(baseData.saleId);
+
+    expect(foundOrder?.saleId).toEqual(baseData.saleId);
+
+    await UtmifyOrderModel.deleteOne({ _id: savedOrder?._id });
+  });
+
+  it('should return null if order not found', async function() {
+    const notFoundOrder = await repository.getTransactionStatusBySaleId('sale-id-unexistent');
+    expect(notFoundOrder).toBeNull();
   });
 });
 

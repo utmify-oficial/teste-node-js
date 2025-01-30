@@ -11,7 +11,7 @@ export default [
     files: ["src/**/*.{js,mjs,cjs,ts}"],
     rules: {
       'indent': ['error', 2],
-      'linebreak-style': ['error', 'unix'],
+      'linebreak-style': ['error', 'windows'],
       'quotes': ['error', 'single'],
       'semi': ['error', 'always'],
       'object-curly-spacing': ['error', 'always'],

@@ -1,54 +1,27 @@
-# Teste técnico para vaga de desenvolvedor - Utmify
+# Desafio Utmify Webhook AllOffers
 
-### Introdução ao teste
+## Descrição
 
-A [Utmify](https://app.utmify.com.br) é uma plataforma voltada para o rastreio de vendas online, realizadas principalmente com o auxílio das plataformas de anúncios, como Meta Ads, Google Ads etc.
+O desafio consiste em criar um novo endpoint que receberá pedidos da plataforma **AllOffers**, realizando o mapeamento e a tradução dos dados para a estrutura da **Utmify**.
+## Requisitos
 
-Para que a prestação desse serviço seja possível, faz-se estritamente necessário que haja a comunicação e o recebimento de dados das plataformas de vendas disponíveis no mercado, como a Shopify, Payt, Kiwify, Hotmart etc.
+### Funcionais
 
-O que torna essa comunicação possível é o que conhecemos como "Webhook", que trata-se de uma maneira que as plataformas conseguem enviar informações para outras plataformas. No nosso contexto, são obtidas as informações das vendas realizadas pelos nossos clientes nas plataformas acima citadas.
+- **Mapeamento dos payloads:** O endpoint deve mapear os payloads recebidos de **/docs/webhooks/AllOffers** para a estrutura da Utmify.
 
-Um dos desafios encontrados no momento de realizar essa obtenção de dados, é que cada sistema possui a sua própria estrutura, fazendo-se necessário que haja o correto mapeamento dos dados recebidos para o formato adotado por tal sistema.
+- **Conversão de moeda:** O valor dos pedidos precisa ser convertido para **BRL**. Para isso, a classe **ConvertOrderCurrencyAction** precisa ser implementada.
 
-O repositório em questão, possui um projeto já estruturado, que está configurado para receber eventos (via webhooks) de variadas plataformas (conforme implementação).
+- **Validação de Status:** Pedidos pagos não devem ser alterados para o status "pendente" e pedidos reembolsados não podem ser atualizados para "pagos" ou "pendentes".
+### Opcionais
 
-A primeira (que você deve utilizar como exemplo), é a plataforma "WorldMarket", cujos webhooks seriam enviados via método **POST** para a rota **/webhooks/world-market** e o body da requisição carrega as informações dos pedidos advindos dessa plataforma (é possível se analisar exemplos desses bodys no diretório /docs/webhooks/WorldMarket).
+- **Testes:** Implementação dos testes utilizando Jest.
 
-No controller já criado (WorldMarketController.ts), é possível se observar que a estrutura da platforma em questão está sendo mapeada para a estrutura da Utmify, salvando as informações da venda posteriormente.
+- **Documentação da solução:** Criar um README.md, explicando como chegou ao resultado.
 
-### **Agora é com você!**
+## Realizado
 
-## Desafio
+Foi realizado o mapeamento do payload da estrutura da plataforma **AllOffers** para o endpoint **/webhooks/all-offers**. Dentro da classe **ConvertOrderCurrencyAction**, foi utilizada a **Awesome API** para a conversão de moedas, considerando a cotação do dia específico.
 
-Crie um novo endpoint que receberá os pedidos da plataforma **AllOffers**, mapeando a estrutura dessa plataforma para a estrutura da Utmify. O mapeamento deve ser realizado com base nos payloads presentes no diretório **/docs/webhooks/AllOffers**.
+Também foi implementado um caso de uso responsável pela busca e validação do estado da transação, impedindo a transição para estados inválidos.
 
-Os pedidos da plataforma **AllOffers** podem vir nas moedas BRL, USD ou EUR, mas os valores devem ser salvos no banco de dados sempre na moeda BRL.
-
-Algumas plataformas podem enviar pedidos em ordem incorreta. Por ex: as etapas de um pix, são: pix gerado (pendente) > pix pago > pix reembolsado (caso o cliente reembolse). Porém, é possível que ocorra de uma plataforma enviar um pix pago e posteriormente o pix gerado (atualizando incorretamente o pedido para o status anterior). Você precisará garantir que um pedido gerado não salve em cima de um pedido pago e que um pedido pago não salve em cima de um pedido reembolsado.
-
-### Requisitos
-* Todos os payloads presentes em **/docs/webhooks/AllOffers** precisam ser mapeados corretamente para a estrutura da Utmify;
-* Os pedidos precisam ser salvos sempre em BRL. Para isso, foi criada a classe ConvertOrderCurrencyAction. Utilize-a para implementar a lógica de conversão;
-* Os pedidos "pagos" não podem atualizar para "pendentes" e os pedidos reembolsados não podem atualizar para "pagos" ou "pendentes";
-* Crie um arquivo README.md explicando como chegou a determinado resultado (opcional);
-* Implemente testes com o Jest (opcional);
-* Desenvolva o seu código em uma branch que inclua o seu nome (ex: feat/sandersonrafael) e ao finalizar, faça um pull request.
-
-## Como testar o endpoint
-
-Utilize o **Insomnia** ou **Postman** e faça uma requisição do tipo **POST** para o endpoint criado, utilizando como body da requisição algum dos payloads presentes no caminho **/docs/webhooks/AllOffers**.
-
-## Como executar o projeto
-
-* Crie uma conta no MongoDB Atlas, caso não possua, e gere uma string de conexão com o banco nomeado "Utmify";
-* Adicione a string de conexão nas variáveis de ambiente, criando um arquivo **.env**, conforme arquivo de exemplo **.env.example**;
-* Adicione a variável **PORT** conforme a sua preferência;
-* Instale, caso não possua, o yarn na sua máquina;
-* Execute o comando **yarn install**;
-* Execute o comando **yarn dev**.
-
-## Tecnologias utilizadas
-* TypeScript;
-* Express;
-* MongoDB;
-* Jest.
+Foram realizados testes utilizando **Jest**, e toda a solução foi documentada em um arquivo **README.md**.
