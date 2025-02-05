@@ -1,20 +1,27 @@
-import { UtmifyOrdersRepositoryMongoose } from '../../repositories/implementations/UtmifyOrdersRepositoryMongoose';
-import { UtmifyOrderFromDb } from '../../repositories/UtmifyOrdersRepository';
-import { SaveUtmifyOrderUseCase, SaveUtmifyOrderUseCaseInput } from '../SaveUtmifyOrderUseCase';
+import { StatusMachineAction } from "../../actions/StatusMachineAction";
+import { UtmifyOrdersRepositoryMongoose } from "../../repositories/implementations/UtmifyOrdersRepositoryMongoose";
+import { UtmifyOrderFromDb } from "../../repositories/UtmifyOrdersRepository";
+import {
+  SaveUtmifyOrderUseCase,
+  SaveUtmifyOrderUseCaseInput,
+} from "../SaveUtmifyOrderUseCase";
 
 const repository = new UtmifyOrdersRepositoryMongoose();
-const usecase = new SaveUtmifyOrderUseCase(repository);
+const statusMachineAction = new StatusMachineAction();
+const usecase = new SaveUtmifyOrderUseCase(repository, statusMachineAction);
 
-describe('execute', () => {
-  it('should call reposiroty with correct params', async () => {
-    jest.spyOn(repository, 'save').mockResolvedValueOnce({} as UtmifyOrderFromDb);
+describe("execute", () => {
+  it("should call reposiroty with correct params", async () => {
+    jest
+      .spyOn(repository, "save")
+      .mockResolvedValueOnce({} as UtmifyOrderFromDb);
 
     const mockedInput = {
       data: {
-        saleId: 'sale_id',
+        saleId: "sale_id",
       },
       additionalInfo: {
-        currency: 'BRL',
+        currency: "BRL",
       },
     } as SaveUtmifyOrderUseCaseInput;
 
