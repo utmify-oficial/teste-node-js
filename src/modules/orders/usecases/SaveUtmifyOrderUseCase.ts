@@ -1,6 +1,7 @@
-import { UseCase } from '../../../core/interfaces/UseCase';
-import { UtmifyOrdersRepository } from '../repositories/UtmifyOrdersRepository';
-import { UtmifyOrder } from '../types/UtmifyOrder';
+import { UseCase } from "../../../core/interfaces/UseCase";
+import { StatusMachineAction } from "../actions/StatusMachineAction";
+import { UtmifyOrdersRepository } from "../repositories/UtmifyOrdersRepository";
+import { UtmifyOrder } from "../types/UtmifyOrder";
 
 export type SaveUtmifyOrderUseCaseInput = {
   data: UtmifyOrder;
@@ -13,14 +14,28 @@ export type SaveUtmifyOrderUseCaseInputAdditionalInfo = {
 
 export type SaveUtmifyOrderUseCaseOutput = void;
 
-export class SaveUtmifyOrderUseCase implements UseCase<SaveUtmifyOrderUseCaseInput, SaveUtmifyOrderUseCaseOutput> {
+export class SaveUtmifyOrderUseCase
+  implements UseCase<SaveUtmifyOrderUseCaseInput, SaveUtmifyOrderUseCaseOutput>
+{
   private readonly repository: UtmifyOrdersRepository;
-
-  constructor(repository: UtmifyOrdersRepository) {
+  constructor(
+    repository: UtmifyOrdersRepository,
+    private statusMachineAction: StatusMachineAction
+  ) {
     this.repository = repository;
   }
 
   async execute(input: SaveUtmifyOrderUseCaseInput): Promise<void> {
-    await this.repository.save(input.data);
+    let allowUpdate = true;
+    const foundOrder = await this.repository.findBySaleId(input.data);
+    if (foundOrder) {
+      allowUpdate = await this.statusMachineAction.execute({
+        actualStatus: foundOrder?.transactionStatus,
+        nextStatus: input.data.transactionStatus,
+      });
+    }
+    if (allowUpdate) {
+      await this.repository.save(input.data);
+    }
   }
 }

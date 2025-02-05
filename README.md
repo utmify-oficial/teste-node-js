@@ -27,12 +27,13 @@ Os pedidos da plataforma **AllOffers** podem vir nas moedas BRL, USD ou EUR, mas
 Algumas plataformas podem enviar pedidos em ordem incorreta. Por ex: as etapas de um pix, são: pix gerado (pendente) > pix pago > pix reembolsado (caso o cliente reembolse). Porém, é possível que ocorra de uma plataforma enviar um pix pago e posteriormente o pix gerado (atualizando incorretamente o pedido para o status anterior). Você precisará garantir que um pedido gerado não salve em cima de um pedido pago e que um pedido pago não salve em cima de um pedido reembolsado.
 
 ### Requisitos
-* Todos os payloads presentes em **/docs/webhooks/AllOffers** precisam ser mapeados corretamente para a estrutura da Utmify;
-* Os pedidos precisam ser salvos sempre em BRL. Para isso, foi criada a classe ConvertOrderCurrencyAction. Utilize-a para implementar a lógica de conversão;
-* Os pedidos "pagos" não podem atualizar para "pendentes" e os pedidos reembolsados não podem atualizar para "pagos" ou "pendentes";
-* Crie um arquivo README.md explicando como chegou a determinado resultado (opcional);
-* Implemente testes com o Jest (opcional);
-* Desenvolva o seu código em uma branch que inclua o seu nome (ex: feat/sandersonrafael) e ao finalizar, faça um pull request.
+
+- Todos os payloads presentes em **/docs/webhooks/AllOffers** precisam ser mapeados corretamente para a estrutura da Utmify;
+- Os pedidos precisam ser salvos sempre em BRL. Para isso, foi criada a classe ConvertOrderCurrencyAction. Utilize-a para implementar a lógica de conversão;
+- Os pedidos "pagos" não podem atualizar para "pendentes" e os pedidos reembolsados não podem atualizar para "pagos" ou "pendentes";
+- Crie um arquivo README.md explicando como chegou a determinado resultado (opcional);
+- Implemente testes com o Jest (opcional);
+- Desenvolva o seu código em uma branch que inclua o seu nome (ex: feat/sandersonrafael) e ao finalizar, faça um pull request.
 
 ## Como testar o endpoint
 
@@ -40,15 +41,37 @@ Utilize o **Insomnia** ou **Postman** e faça uma requisição do tipo **POST** 
 
 ## Como executar o projeto
 
-* Crie uma conta no MongoDB Atlas, caso não possua, e gere uma string de conexão com o banco nomeado "Utmify";
-* Adicione a string de conexão nas variáveis de ambiente, criando um arquivo **.env**, conforme arquivo de exemplo **.env.example**;
-* Adicione a variável **PORT** conforme a sua preferência;
-* Instale, caso não possua, o yarn na sua máquina;
-* Execute o comando **yarn install**;
-* Execute o comando **yarn dev**.
+- Crie uma conta no MongoDB Atlas, caso não possua, e gere uma string de conexão com o banco nomeado "Utmify";
+- Adicione a string de conexão nas variáveis de ambiente, criando um arquivo **.env**, conforme arquivo de exemplo **.env.example**;
+- Adicione a variável **PORT** conforme a sua preferência;
+- Instale, caso não possua, o yarn na sua máquina;
+- Execute o comando **yarn install**;
+- Execute o comando **yarn dev**.
 
 ## Tecnologias utilizadas
-* TypeScript;
-* Express;
-* MongoDB;
-* Jest.
+
+- TypeScript;
+- Express;
+- MongoDB;
+- Jest.
+
+# Resolução
+
+## Setup de Resolução Implementação
+
+- Adicione a variável de ambiente AWESOME_API_URL = https://economia.awesomeapi.com.br no **.env** para utilizar a api externa de utilizada na conversão das moedas
+
+## Resolução Conversão de Moeda
+
+- Foi incluída na Action "ConvertOrderCurrencyAction" para validação de moedas.
+- Será utilizada a API https://economia.awesomeapi.com.br para consulta da cotação atual de moedas como USD e EUR
+- A Moedas diferentes de Real (BRL), passarão por consulta de cotação e terão seu valores convertido para BRL antes da persistência dos dados.
+-
+
+## Resolução de Status
+
+- Conforme a regra descrita no teste, foi criada uma Action(StatusMachineAction) simples "máquina de status" para validar se o status original deverá ser atualizado pelo novo status
+
+## Teste com Jest
+
+- Para rodar os testes, utilize o comando "yarn test src/modules/orders/controllers/**tests**/AllOffersController.spec.ts"
