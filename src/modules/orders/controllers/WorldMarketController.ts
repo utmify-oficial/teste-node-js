@@ -19,8 +19,8 @@ export class WorldMarketController implements Controller {
 
   async handle(req: Request, res: Response): Promise<Response> {
     console.log('WorldMarket order received');
+    console.log(JSON.stringify(req.headers, null, 2));
     console.log(JSON.stringify(req.body, null, 2));
-    console.log(JSON.stringify(req.headers));
 
     const body = req.body as WorldMarketBody;
 

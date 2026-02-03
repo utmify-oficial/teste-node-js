@@ -9,7 +9,7 @@ export class Env {
   static vars: EnvVars;
 
   static init(): void {
-    dotenv.config();
+    dotenv.config({ quiet: true });
 
     Env.vars = {
       PORT: Number(process.env.PORT),
