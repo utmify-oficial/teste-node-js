@@ -1,7 +1,6 @@
 /* eslint-disable no-console */
 import cors from 'cors';
 import express, { Application } from 'express';
-import 'express-async-errors';
 import morgan from 'morgan';
 import http from 'http';
 
